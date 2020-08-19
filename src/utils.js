@@ -1,4 +1,4 @@
-import {MONTH_NAMES} from './constants.js';
+import {MONTH_NAMES, EXTRA_COUNT} from './constants.js';
 
 const getRandomInteger = (min, max) => {
   const rand = min + Math.random() * (max + 1 - min);
@@ -21,7 +21,13 @@ const getRandomElements = (elements, maxLenght) => {
   return randomElements;
 };
 
+const getRandomBoolean = () => Boolean(getRandomInteger(0, 1));
+
 const getNewArray = (count, action) => new Array(count).fill(``).map(action);
+
+const render = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
 
 const castTimeFormat = (value) => value < 10 ? `0${value}` : String(value);
 
@@ -49,12 +55,27 @@ const formatCommentDate = (date) => {
   return `${year}/${month}/${day}  ${hours}:${minutes}`;
 };
 
+const getSortedFilmsByRating = (sortingFilms) => sortingFilms.slice().sort((a, b) => b.rating - a.rating).slice(0, EXTRA_COUNT);
+
+const getSortedFilmsByComments = (sortingFilms) => {
+  const commentedFilms = sortingFilms.slice();
+  const filmsWithoutComments = commentedFilms.filter((film) => film.comments === null);
+  const filmsWithComments = commentedFilms.filter((film) => film.comments).sort((a, b) => b.comments.length - a.comments.length);
+  const sortedFilms = filmsWithComments.concat(filmsWithoutComments);
+
+  return sortedFilms.slice(0, EXTRA_COUNT);
+};
+
 export {
   getRandomInteger,
   getRandomElement,
   getRandomElements,
+  getRandomBoolean,
   getNewArray,
+  render,
   formatDate,
   formatFullDate,
-  formatCommentDate
+  formatCommentDate,
+  getSortedFilmsByRating,
+  getSortedFilmsByComments
 };

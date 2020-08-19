@@ -1,17 +1,9 @@
 import {formatDate} from '../utils.js';
-import {FILM_CARD_CONTROL_NAMES} from '../constants.js';
 
-const createControlTemplate = (controls) => {
-  return controls
-    .map((control) => {
-      return (
-        `<button class="film-card__controls-item button film-card__controls-item--${control.name}">${control.text}</button>`
-      );
-    }).join(`\n`);
-};
+const setActiveClass = (control) => control ? `film-card__controls-item--active` : ``;
 
 export const createFilmCardTemplate = (filmData) => {
-  const {image, title, rating, releaseDate, runtime, genres, description, comments} = filmData;
+  const {image, title, rating, releaseDate, runtime, genres, description, comments, isWatchlist, isFavorite, isHistory} = filmData;
 
   const releaseDateView = formatDate(releaseDate);
 
@@ -28,7 +20,15 @@ export const createFilmCardTemplate = (filmData) => {
       <p class="film-card__description">${description}</p>
       <a class="film-card__comments">${comments.length} comments</a>
       <form class="film-card__controls">
-        ${createControlTemplate(FILM_CARD_CONTROL_NAMES)};
+        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${setActiveClass(isWatchlist)}">
+        Add to watchlist
+        </button>
+        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched  ${setActiveClass(isHistory)}">
+          Mark as watched
+        </button>
+        <button class="film-card__controls-item button film-card__controls-item--favorite  ${setActiveClass(isFavorite)}">
+          Mark as favorite
+        </button>
       </form>
     </article>`
   );
