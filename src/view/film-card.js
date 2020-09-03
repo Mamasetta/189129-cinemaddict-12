@@ -1,9 +1,10 @@
+import {createElement} from "../utils.js";
 import {formatDate} from '../utils.js';
 
-const setActiveClass = (control) => control ? `film-card__controls-item--active` : ``;
+const getActiveClass = (control) => control ? `film-card__controls-item--active` : ``;
 
-export const createFilmCardTemplate = (filmData) => {
-  const {image, title, rating, releaseDate, runtime, genres, description, comments, isWatchlist, isFavorite, isHistory} = filmData;
+const createFilmCardTemplate = (filmData) => {
+  const {image, title, rating, releaseDate, runtime, genres, description, comments, isInWatchlist, isFavorite, isHistory} = filmData;
 
   const releaseDateView = formatDate(releaseDate);
 
@@ -20,16 +21,39 @@ export const createFilmCardTemplate = (filmData) => {
       <p class="film-card__description">${description}</p>
       <a class="film-card__comments">${comments.length} comments</a>
       <form class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${setActiveClass(isWatchlist)}">
+        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${getActiveClass(isInWatchlist)}">
         Add to watchlist
         </button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched  ${setActiveClass(isHistory)}">
+        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched  ${getActiveClass(isHistory)}">
           Mark as watched
         </button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite  ${setActiveClass(isFavorite)}">
+        <button class="film-card__controls-item button film-card__controls-item--favorite  ${getActiveClass(isFavorite)}">
           Mark as favorite
         </button>
       </form>
     </article>`
   );
 };
+
+export default class FilmCard {
+  constructor(filmData) {
+    this._filmData = filmData;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._filmData);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

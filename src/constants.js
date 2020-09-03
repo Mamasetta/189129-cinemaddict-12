@@ -1,5 +1,7 @@
 const EXTRA_COUNT = 2;
 const FILMS_COUNT = 20;
+const FILMS_DATA_MIN = 1;
+const COMMENTS_SENTENCE_COUNT = 3;
 
 const MONTH_NAMES = [
   `January`,
@@ -92,21 +94,6 @@ const EMOJIES = [
   `angry`
 ];
 
-const FILM_DETAILS_CONTROL_NAMES = [
-  {
-    name: `watchlist`,
-    text: `Add to watchlist`
-  },
-  {
-    name: `watched`,
-    text: `Already watched`
-  },
-  {
-    name: `favorite`,
-    text: `Add to favorites`
-  }
-];
-
 const FilmCardsShowCount = {
   ON_START: 5,
   BY_BUTTON: 5
@@ -122,20 +109,17 @@ const RuntimeValue = {
   MINUTES_MAX: 60
 };
 
-const CommentsValue = {
+const DateValue = {
   DATE_MAX: 7,
   HOURS_MAX: 24,
-  MINUTES_MAX: 60,
-  SENTENCE_MAX: 3
-};
-
-const FilmDataValue = {
-  MIN: 1
+  MINUTES_MAX: 60
 };
 
 export {
   EXTRA_COUNT,
   FILMS_COUNT,
+  FILMS_DATA_MIN,
+  COMMENTS_SENTENCE_COUNT,
   MONTH_NAMES,
   EXTRA_SECTION_TITLES,
   IMAGES,
@@ -145,10 +129,8 @@ export {
   COUNTRIES,
   DESCRIPTION_SENTENCES,
   EMOJIES,
-  FILM_DETAILS_CONTROL_NAMES,
   FilmCardsShowCount,
   CommonValue,
   RuntimeValue,
-  CommentsValue,
-  FilmDataValue
+  DateValue
 };

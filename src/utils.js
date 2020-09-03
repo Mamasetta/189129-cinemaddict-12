@@ -5,11 +5,7 @@ const getRandomInteger = (min, max) => {
   return Math.floor(rand);
 };
 
-const getRandomElement = (elements) => {
-  const randomElement = elements[getRandomInteger(0, elements.length - 1)];
-
-  return randomElement;
-};
+const getRandomElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
 
 const getRandomElements = (elements, maxLenght) => {
   const length = getRandomInteger(1, maxLenght);
@@ -66,6 +62,33 @@ const getSortedFilmsByComments = (sortingFilms) => {
   return sortedFilms.slice(0, EXTRA_COUNT);
 };
 
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
+const renderElement = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+const renderTemplate = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
 export {
   getRandomInteger,
   getRandomElement,
@@ -77,5 +100,9 @@ export {
   formatFullDate,
   formatCommentDate,
   getSortedFilmsByRating,
-  getSortedFilmsByComments
+  getSortedFilmsByComments,
+  RenderPosition,
+  renderElement,
+  renderTemplate,
+  createElement
 };
