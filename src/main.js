@@ -5,6 +5,8 @@ import ProfileRatingView from './view/profile-rating.js';
 import MainNavigationView from './view/main-navigation.js';
 import SortingView from './view/sorting.js';
 import FilmsSectionView from './view/films-section.js';
+import FilmsListView from './view/films-list.js';
+import NoDataView from './view/no-data.js';
 import FilmsContainerView from './view/films-container.js';
 import ShowMoreButtonView from './view/show-more-button.js';
 import FilmCardView from './view/film-card.js';
@@ -30,11 +32,13 @@ renderElement(mainElement, new SortingView().getElement(), RenderPosition.BEFORE
 renderElement(mainElement, new FilmsSectionView().getElement(), RenderPosition.BEFOREEND);
 
 const filmsSectionElement = mainElement.querySelector(`.films`);
-renderElement(filmsSectionElement, new FilmsContainerView().getElement(), RenderPosition.AFTERBEGIN);
+renderElement(filmsSectionElement, new FilmsListView().getElement(), RenderPosition.AFTERBEGIN);
+
+const filmsListElement = filmsSectionElement.querySelector(`.films-list`);
+renderElement(filmsListElement, new FilmsContainerView().getElement(), RenderPosition.AFTERBEGIN);
 EXTRA_SECTION_TITLES.forEach((title) => renderElement(filmsSectionElement, new FilmsExtraContainerView(title).getElement(), RenderPosition.BEFOREEND));
 
-const filmsContainerElement = filmsSectionElement.querySelector(`.films-list__container`);
-const filmsListElement = filmsSectionElement.querySelector(`.films-list`);
+const filmsContainerElement = filmsListElement.querySelector(`.films-list__container`);
 
 const renderFilmCard = (containerElement, filmData) => {
   const filmCard = new FilmCardView(filmData);
