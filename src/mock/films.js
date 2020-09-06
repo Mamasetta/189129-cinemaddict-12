@@ -1,8 +1,15 @@
 import {getRandomInteger, getRandomElement, getRandomElements, getRandomBoolean, getNewArray} from '../utils.js';
-import {IMAGES, TITLES, NAMES, GENRES, COUNTRIES, DESCRIPTION_SENTENCES, EMOJIES, CommonValue, RuntimeValue, CommentsValue, FilmDataValue} from '../constants.js';
+import {FILMS_DATA_MIN, COMMENTS_SENTENCE_COUNT, IMAGES, TITLES, NAMES, GENRES, COUNTRIES, DESCRIPTION_SENTENCES, EMOJIES, CommonValue, RuntimeValue, DateValue} from '../constants.js';
 
 const getReleaseDate = () => {
   const releaseDate = new Date();
+
+  const date = getRandomInteger(CommonValue.MIN, DateValue.DATE_MAX);
+  const hours = getRandomInteger(CommonValue.MIN, DateValue.HOURS_MAX);
+  const minutes = getRandomInteger(CommonValue.MIN, DateValue.MINUTES_MAX);
+  releaseDate.setDate(releaseDate.getDate() + date);
+  releaseDate.setHours(releaseDate.getHours() + hours);
+  releaseDate.setMinutes(releaseDate.getMinutes() + minutes);
 
   return releaseDate;
 };
@@ -17,9 +24,9 @@ const getRuntime = () => {
 const getCommentDate = () => {
   const commentDate = new Date();
 
-  const date = getRandomInteger(CommonValue.MIN, CommentsValue.DATE_MAX);
-  const hours = getRandomInteger(CommonValue.MIN, CommentsValue.HOURS_MAX);
-  const minutes = getRandomInteger(CommonValue.MIN, CommentsValue.MINUTES_MAX);
+  const date = getRandomInteger(CommonValue.MIN, DateValue.DATE_MAX);
+  const hours = getRandomInteger(CommonValue.MIN, DateValue.HOURS_MAX);
+  const minutes = getRandomInteger(CommonValue.MIN, DateValue.MINUTES_MAX);
   commentDate.setDate(commentDate.getDate() + date);
   commentDate.setHours(commentDate.getHours() + hours);
   commentDate.setMinutes(commentDate.getMinutes() + minutes);
@@ -31,7 +38,7 @@ const generateCommentData = () => ({
   emoji: getRandomElement(EMOJIES),
   date: getCommentDate(),
   author: getRandomElement(NAMES),
-  description: getRandomElements(DESCRIPTION_SENTENCES, CommentsValue.SENTENCE_MAX).join(` `)
+  description: getRandomElements(DESCRIPTION_SENTENCES, COMMENTS_SENTENCE_COUNT).join(` `)
 });
 
 export const generateFilmData = () => ({
@@ -39,16 +46,16 @@ export const generateFilmData = () => ({
   title: getRandomElement(TITLES),
   rating: getRandomInteger(CommonValue.MIN, CommonValue.MAX),
   director: getRandomElement(NAMES),
-  writers: getRandomElements(NAMES, getRandomInteger(FilmDataValue.MIN, CommonValue.MAX)).join(`, `),
-  cast: getRandomElements(NAMES, getRandomInteger(FilmDataValue.MIN, CommonValue.MAX)).join(`, `),
+  writers: getRandomElements(NAMES, getRandomInteger(FILMS_DATA_MIN, CommonValue.MAX)).join(`, `),
+  cast: getRandomElements(NAMES, getRandomInteger(FILMS_DATA_MIN, CommonValue.MAX)).join(`, `),
   releaseDate: getReleaseDate(),
   runtime: getRuntime(),
   country: getRandomElement(COUNTRIES),
-  genres: getRandomElements(GENRES, getRandomInteger(FilmDataValue.MIN, CommonValue.MAX)),
+  genres: getRandomElements(GENRES, getRandomInteger(FILMS_DATA_MIN, CommonValue.MAX)),
   description: getRandomElements(DESCRIPTION_SENTENCES, CommonValue.MAX).join(` `),
   comments: getNewArray(getRandomInteger(CommonValue.MIN, CommonValue.MAX), generateCommentData),
   ageRating: getRandomInteger(CommonValue.MIN, CommonValue.MAX),
-  isWatchlist: getRandomBoolean(),
+  isInWatchlist: getRandomBoolean(),
   isFavorite: getRandomBoolean(),
   isHistory: getRandomBoolean()
 });
