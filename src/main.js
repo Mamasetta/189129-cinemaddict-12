@@ -73,7 +73,7 @@ const renderFilmCard = (containerElement, filmData) => {
 
 let showingFilmsCount = FilmCardsShowCount.ON_START;
 
-if (!showingFilmsCount) {
+if (films.length === 0) {
   const filmsTitleElement = filmsListElement.querySelector(`.films-list__title`);
   filmsTitleElement.classList.remove(`visually-hidden`);
   filmsTitleElement.textContent = `There are no movies in our database`;
