@@ -1,5 +1,5 @@
 import AbstractView from "./abstract.js";
-import {formatDate} from '../utils.js';
+import {formatDate} from '../utils/film.js';
 
 const getActiveClass = (control) => control ? `film-card__controls-item--active` : ``;
 
@@ -39,9 +39,20 @@ export default class FilmCard extends AbstractView {
   constructor(filmData) {
     super();
     this._filmData = filmData;
+    this._filmClickHandler = this._filmClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._filmData);
+  }
+
+  _filmClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.filmClick();
+  }
+
+  setFilmClickHandler(callback) {
+    this._callback.filmClick = callback;
+    this.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, this._filmClickHandler);
   }
 }

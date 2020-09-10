@@ -1,5 +1,5 @@
 import AbstractView from "./abstract.js";
-import {formatFullDate, formatCommentDate} from '../utils.js';
+import {formatFullDate, formatCommentDate} from '../utils/film.js';
 import {EMOJIES} from '../constants.js';
 
 const getCheckedAttribute = (control) => control ? `checked` : ``;
@@ -152,9 +152,20 @@ export default class FilmDetails extends AbstractView {
   constructor(filmData) {
     super();
     this._filmData = filmData;
+    this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmDetailsTemplate(this._filmData);
+  }
+
+  _closeButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeButtonClick();
+  }
+
+  setCloseButtonClickHandler(callback) {
+    this._callback.closeButtonClick = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closeButtonClickHandler);
   }
 }

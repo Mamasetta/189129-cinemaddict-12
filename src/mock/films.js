@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomElement, getRandomElements, getRandomBoolean, getNewArray} from '../utils.js';
+import {getRandomInteger, getRandomElement, getRandomElements, getRandomBoolean, getNewArray} from '../utils/common.js';
 import {FILMS_DATA_MIN, COMMENTS_SENTENCE_COUNT, IMAGES, TITLES, NAMES, GENRES, COUNTRIES, DESCRIPTION_SENTENCES, EMOJIES, CommonValue, RuntimeValue, DateValue} from '../constants.js';
 
 const getReleaseDate = () => {

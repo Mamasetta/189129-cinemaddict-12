@@ -1,5 +1,7 @@
 import {FILMS_COUNT, EXTRA_SECTION_TITLES, FilmCardsShowCount} from './constants.js';
-import {getNewArray, renderElement, RenderPosition, getSortedFilmsByRating, getSortedFilmsByComments} from './utils.js';
+import {getSortedFilmsByRating, getSortedFilmsByComments} from './utils/film.js';
+import {getNewArray} from './utils/common.js';
+import {RenderPosition, render} from './utils/render.js';
 
 import ProfileRatingView from './view/profile-rating.js';
 import MainNavigationView from './view/main-navigation.js';
@@ -24,17 +26,17 @@ const footerStatisticsElement = bodyElement.querySelector(`.footer__statistics`)
 const films = getNewArray(FILMS_COUNT, generateFilmData);
 const filters = generateFilterData(films);
 
-renderElement(headerElement, new ProfileRatingView().getElement(), RenderPosition.BEFOREEND);
+render(headerElement, new ProfileRatingView(), RenderPosition.BEFOREEND);
 
-renderElement(mainElement, new MainNavigationView(filters).getElement(), RenderPosition.BEFOREEND);
-renderElement(mainElement, new SortingView().getElement(), RenderPosition.BEFOREEND);
-renderElement(mainElement, new FilmsSectionView().getElement(), RenderPosition.BEFOREEND);
+render(mainElement, new MainNavigationView(filters), RenderPosition.BEFOREEND);
+render(mainElement, new SortingView(), RenderPosition.BEFOREEND);
+render(mainElement, new FilmsSectionView(), RenderPosition.BEFOREEND);
 
 const filmsSectionElement = mainElement.querySelector(`.films`);
-renderElement(filmsSectionElement, new FilmsListView().getElement(), RenderPosition.AFTERBEGIN);
+render(filmsSectionElement, new FilmsListView(), RenderPosition.AFTERBEGIN);
 
 const filmsListElement = filmsSectionElement.querySelector(`.films-list`);
-renderElement(filmsListElement, new FilmsContainerView().getElement(), RenderPosition.BEFOREEND);
+render(filmsListElement, new FilmsContainerView(), RenderPosition.BEFOREEND);
 
 const filmsContainerElement = filmsListElement.querySelector(`.films-list__container`);
 
@@ -43,8 +45,6 @@ const renderFilmCard = (containerElement, filmData) => {
   const filmDetails = new FilmDetailsView(filmData);
 
   const renderFilmDetails = () => {
-    const filmDetailsCloseButton = filmDetails.getElement().querySelector(`.film-details__close-btn`);
-
     const onEscKeyDown = (evt) => {
       if (evt.key === `Escape` || evt.key === `Esc`) {
         evt.preventDefault();
@@ -54,21 +54,21 @@ const renderFilmCard = (containerElement, filmData) => {
       }
     };
 
-    filmDetailsCloseButton.addEventListener(`click`, () => {
+    filmDetails.setCloseButtonClickHandler(() => {
       filmDetails.getElement().remove();
       filmDetails.removeElement();
     });
 
     document.addEventListener(`keydown`, onEscKeyDown);
 
-    renderElement(bodyElement, filmDetails.getElement(), RenderPosition.BEFOREEND);
+    render(bodyElement, filmDetails, RenderPosition.BEFOREEND);
   };
 
-  filmCard.getElement().querySelector(`.film-card__poster`).addEventListener(`click`, () => {
+  filmCard.setFilmClickHandler(() => {
     renderFilmDetails();
   });
 
-  renderElement(containerElement, filmCard.getElement(), RenderPosition.BEFOREEND);
+  render(containerElement, filmCard, RenderPosition.BEFOREEND);
 };
 
 let showingFilmsCount = FilmCardsShowCount.ON_START;
@@ -78,17 +78,15 @@ if (films.length === 0) {
   filmsTitleElement.classList.remove(`visually-hidden`);
   filmsTitleElement.textContent = `There are no movies in our database`;
 } else {
-  EXTRA_SECTION_TITLES.forEach((title) => renderElement(filmsSectionElement, new FilmsExtraContainerView(title).getElement(), RenderPosition.BEFOREEND));
+  EXTRA_SECTION_TITLES.forEach((title) => render(filmsSectionElement, new FilmsExtraContainerView(title), RenderPosition.BEFOREEND));
 
   films.slice(0, showingFilmsCount)
   .forEach((film) => renderFilmCard(filmsContainerElement, film));
 
   const showMoreButton = new ShowMoreButtonView();
-  renderElement(filmsListElement, showMoreButton.getElement(), RenderPosition.BEFOREEND);
+  render(filmsListElement, showMoreButton, RenderPosition.BEFOREEND);
 
-  showMoreButton.getElement().addEventListener(`click`, (evt) => {
-    evt.preventDefault();
-
+  showMoreButton.setClickHandler(() => {
     const prevFilmsCount = showingFilmsCount;
     showingFilmsCount = showingFilmsCount + FilmCardsShowCount.BY_BUTTON;
 
@@ -107,6 +105,6 @@ if (films.length === 0) {
   getSortedFilmsByComments(films).forEach((film) => renderFilmCard(mostCommentedContainer, film));
 }
 
-renderElement(footerStatisticsElement, new FooterStatisticsView(films.length).getElement(), RenderPosition.BEFOREEND);
+render(footerStatisticsElement, new FooterStatisticsView(films.length), RenderPosition.BEFOREEND);
 
 
