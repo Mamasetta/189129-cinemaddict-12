@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 import {formatDate} from '../utils.js';
 
 const getActiveClass = (control) => control ? `film-card__controls-item--active` : ``;
@@ -35,25 +35,13 @@ const createFilmCardTemplate = (filmData) => {
   );
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(filmData) {
+    super();
     this._filmData = filmData;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._filmData);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
