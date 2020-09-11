@@ -11,8 +11,6 @@ import FilmDetailsView from '../view/film-details.js';
 
 import {RenderPosition, render} from '../utils/render.js';
 
-let showingFilmsCount = FilmCardsShowCount.ON_START;
-
 export default class MovieList {
   constructor(bodyContainer, mainContainer) {
     this._bodyContainer = bodyContainer;
@@ -21,10 +19,7 @@ export default class MovieList {
     this._filmsSectionComponent = new FilmsSectionView();
     this._filmsListComponent = new FilmsListView();
     this._filmsContainerComponent = new FilmsContainerView();
-    this._showMoreButtonComponent = new ShowMoreButtonView();
-    this._filmCardComponent = new FilmCardView();
-    this._filmsExtraContainerComponent = new FilmsExtraContainerView();
-    this._filmDetailsComponent = new FilmDetailsView();
+    this._showingFilmsCount = FilmCardsShowCount.ON_START;
   }
 
   init(films) {
@@ -35,14 +30,11 @@ export default class MovieList {
     this.films = films.slice();
 
     if (films.length === 0) {
-      const filmsTitleElement = this._filmsListComponent.getElement().querySelector(`.films-list__title`);
-
-      filmsTitleElement.classList.remove(`visually-hidden`);
-      filmsTitleElement.textContent = `There are no movies in our database`;
+      this._showNoFilmsText();
     } else {
       EXTRA_SECTION_TITLES.forEach((title) => render(this._filmsSectionComponent, new FilmsExtraContainerView(title), RenderPosition.BEFOREEND));
 
-      films.slice(0, showingFilmsCount)
+      films.slice(0, this._showingFilmsCount)
       .forEach((film) => this._renderFilmCard(this._filmsContainerComponent, film));
 
       this._renderShowMoreButton(films);
@@ -50,18 +42,25 @@ export default class MovieList {
     }
   }
 
+  _showNoFilmsText() {
+    const filmsTitleElement = this._filmsListComponent.getElement().querySelector(`.films-list__title`);
+
+    filmsTitleElement.classList.remove(`visually-hidden`);
+    filmsTitleElement.textContent = `There are no movies in our database`;
+  }
+
   _renderShowMoreButton(filmsData) {
     const showMoreButton = new ShowMoreButtonView();
     render(this._filmsListComponent, showMoreButton, RenderPosition.BEFOREEND);
 
     showMoreButton.setClickHandler(() => {
-      const prevFilmsCount = showingFilmsCount;
-      showingFilmsCount = showingFilmsCount + FilmCardsShowCount.BY_BUTTON;
+      const prevFilmsCount = this._showingFilmsCount;
+      this._showingFilmsCount = this._showingFilmsCount + FilmCardsShowCount.BY_BUTTON;
 
-      filmsData.slice(prevFilmsCount, showingFilmsCount)
+      filmsData.slice(prevFilmsCount, this._showingFilmsCount)
         .forEach((film) => this._renderFilmCard(this._filmsContainerComponent, film));
 
-      if (showingFilmsCount >= filmsData.length) {
+      if (this._showingFilmsCount >= filmsData.length) {
         showMoreButton.getElement().remove();
         showMoreButton.removeElement();
       }

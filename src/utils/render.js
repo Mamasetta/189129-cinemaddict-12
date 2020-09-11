@@ -21,15 +21,9 @@ const render = (container, child, place) => {
     case RenderPosition.BEFOREEND:
       container.append(child);
       break;
+    default:
+      throw new Error(`incorrect position value`);
   }
-};
-
-const renderTemplate = (container, template, place) => {
-  if (container instanceof Abstract) {
-    container = container.getElement();
-  }
-
-  container.insertAdjacentHTML(place, template);
 };
 
 const createElement = (template) => {
@@ -51,7 +45,6 @@ const remove = (component) => {
 export {
   RenderPosition,
   render,
-  renderTemplate,
   createElement,
   remove
 };

@@ -2,16 +2,12 @@ import {MONTH_NAMES, EXTRA_COUNT} from '../constants.js';
 
 const castTimeFormat = (value) => value < 10 ? `0${value}` : String(value);
 
-const formatDate = (date) => {
-  const year = String(date.getFullYear());
-
-  return `${year}`;
-};
+const formatDate = (date) => date.getFullYear();
 
 const formatFullDate = (date) => {
   const day = castTimeFormat(date.getDate());
   const month = MONTH_NAMES[String(date.getMonth())];
-  const year = String(date.getFullYear());
+  const year = date.getFullYear();
 
   return `${day} ${month} ${year}`;
 };

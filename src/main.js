@@ -25,8 +25,7 @@ render(headerElement, new ProfileRatingView(), RenderPosition.BEFOREEND);
 render(mainElement, new MainNavigationView(filters), RenderPosition.BEFOREEND);
 render(mainElement, new SortingView(), RenderPosition.BEFOREEND);
 
-const movieListPresenter = new MovieListPresenter(bodyElement, mainElement);
-movieListPresenter.init(films);
+new MovieListPresenter(bodyElement, mainElement).init(films);
 
 render(footerStatisticsElement, new FooterStatisticsView(films.length), RenderPosition.BEFOREEND);
 
