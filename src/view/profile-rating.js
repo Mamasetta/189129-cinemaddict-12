@@ -1,10 +1,6 @@
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
-export default class ProfileRating {
-  constructor() {
-    this._element = null;
-  }
-
+export default class ProfileRating extends AbstractView {
   getTemplate() {
     return (
       `<section class="header__profile profile">
@@ -12,17 +8,5 @@ export default class ProfileRating {
         <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
       </section>`
     );
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
