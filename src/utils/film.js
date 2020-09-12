@@ -33,10 +33,16 @@ const getSortedFilmsByComments = (sortingFilms) => {
   return sortedFilms.slice(0, EXTRA_COUNT);
 };
 
+const sortingByDate = (firstFilm, secondFilm) => secondFilm.releaseDate.getTime() - firstFilm.releaseDate.getTime();
+
+const sortingByRating = (firstFilm, secondFilm) => secondFilm.rating - firstFilm.rating;
+
 export {
   formatDate,
   formatFullDate,
   formatCommentDate,
   getSortedFilmsByRating,
-  getSortedFilmsByComments
+  getSortedFilmsByComments,
+  sortingByDate,
+  sortingByRating
 };

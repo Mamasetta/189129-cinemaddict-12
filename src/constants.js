@@ -115,6 +115,17 @@ const DateValue = {
   MINUTES_MAX: 60
 };
 
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
+const SortingType = {
+  DEFAULT: `default`,
+  DATE: `date`,
+  RATING: `rating`
+};
+
 export {
   EXTRA_COUNT,
   FILMS_COUNT,
@@ -132,5 +143,7 @@ export {
   FilmCardsShowCount,
   CommonValue,
   RuntimeValue,
-  DateValue
+  DateValue,
+  RenderPosition,
+  SortingType
 };
