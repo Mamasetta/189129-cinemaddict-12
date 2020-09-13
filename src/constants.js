@@ -1,3 +1,4 @@
+const RATING_MAX = 10;
 const EXTRA_COUNT = 2;
 const FILMS_COUNT = 20;
 const FILMS_DATA_MIN = 1;
@@ -127,6 +128,7 @@ const SortingType = {
 };
 
 export {
+  RATING_MAX,
   EXTRA_COUNT,
   FILMS_COUNT,
   FILMS_DATA_MIN,
