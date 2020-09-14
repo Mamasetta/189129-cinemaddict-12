@@ -1,4 +1,4 @@
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 
 const createFilterName = (name) => (
   name.split(``).map((letter, index) => (index === 0 ? letter.toUpperCase() : letter)).join(``)

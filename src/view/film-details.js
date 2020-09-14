@@ -1,4 +1,4 @@
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 import {formatFullDate, formatCommentDate} from '../utils/film.js';
 import {EMOJIES} from '../constants.js';
 

@@ -1,3 +1,4 @@
+const RATING_MAX = 10;
 const EXTRA_COUNT = 2;
 const FILMS_COUNT = 20;
 const FILMS_DATA_MIN = 1;
@@ -115,7 +116,19 @@ const DateValue = {
   MINUTES_MAX: 60
 };
 
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
+const SortingType = {
+  DEFAULT: `default`,
+  DATE: `date`,
+  RATING: `rating`
+};
+
 export {
+  RATING_MAX,
   EXTRA_COUNT,
   FILMS_COUNT,
   FILMS_DATA_MIN,
@@ -132,5 +145,7 @@ export {
   FilmCardsShowCount,
   CommonValue,
   RuntimeValue,
-  DateValue
+  DateValue,
+  RenderPosition,
+  SortingType
 };

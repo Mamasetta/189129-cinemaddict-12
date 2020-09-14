@@ -1,4 +1,4 @@
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 import {formatDate} from '../utils/film.js';
 
 const getActiveClass = (control) => control ? `film-card__controls-item--active` : ``;

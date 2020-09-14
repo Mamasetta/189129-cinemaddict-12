@@ -5,12 +5,11 @@ import {RenderPosition, render} from './utils/render.js';
 
 import ProfileRatingView from './view/profile-rating.js';
 import MainNavigationView from './view/main-navigation.js';
-import SortingView from './view/sorting.js';
 import MovieListPresenter from './presenter/movie-list.js';
 import FooterStatisticsView from './view/footer-statistics.js';
 
 import {generateFilmData} from './mock/films.js';
-import {generateFilterData} from "./mock/filter.js";
+import {generateFilterData} from './mock/filter.js';
 
 const bodyElement = document.querySelector(`body`);
 const headerElement = bodyElement.querySelector(`.header`);
@@ -23,7 +22,6 @@ const filters = generateFilterData(films);
 render(headerElement, new ProfileRatingView(), RenderPosition.BEFOREEND);
 
 render(mainElement, new MainNavigationView(filters), RenderPosition.BEFOREEND);
-render(mainElement, new SortingView(), RenderPosition.BEFOREEND);
 
 new MovieListPresenter(bodyElement, mainElement).init(films);
 

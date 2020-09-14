@@ -1,5 +1,5 @@
 import {getRandomInteger, getRandomElement, getRandomElements, getRandomBoolean, getNewArray} from '../utils/common.js';
-import {FILMS_DATA_MIN, COMMENTS_SENTENCE_COUNT, IMAGES, TITLES, NAMES, GENRES, COUNTRIES, DESCRIPTION_SENTENCES, EMOJIES, CommonValue, RuntimeValue, DateValue} from '../constants.js';
+import {RATING_MAX, FILMS_DATA_MIN, COMMENTS_SENTENCE_COUNT, IMAGES, TITLES, NAMES, GENRES, COUNTRIES, DESCRIPTION_SENTENCES, EMOJIES, CommonValue, RuntimeValue, DateValue} from '../constants.js';
 
 const getReleaseDate = () => {
   const releaseDate = new Date();
@@ -44,7 +44,7 @@ const generateCommentData = () => ({
 export const generateFilmData = () => ({
   image: getRandomElement(IMAGES),
   title: getRandomElement(TITLES),
-  rating: getRandomInteger(CommonValue.MIN, CommonValue.MAX),
+  rating: getRandomInteger(CommonValue.MIN, RATING_MAX),
   director: getRandomElement(NAMES),
   writers: getRandomElements(NAMES, getRandomInteger(FILMS_DATA_MIN, CommonValue.MAX)).join(`, `),
   cast: getRandomElements(NAMES, getRandomInteger(FILMS_DATA_MIN, CommonValue.MAX)).join(`, `),
