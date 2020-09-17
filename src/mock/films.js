@@ -1,6 +1,8 @@
 import {getRandomInteger, getRandomElement, getRandomElements, getRandomBoolean, getNewArray} from '../utils/common.js';
 import {RATING_MAX, FILMS_DATA_MIN, COMMENTS_SENTENCE_COUNT, IMAGES, TITLES, NAMES, GENRES, COUNTRIES, DESCRIPTION_SENTENCES, EMOJIES, CommonValue, RuntimeValue, DateValue} from '../constants.js';
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const getReleaseDate = () => {
   const releaseDate = new Date();
 
@@ -42,6 +44,7 @@ const generateCommentData = () => ({
 });
 
 export const generateFilmData = () => ({
+  id: generateId(),
   image: getRandomElement(IMAGES),
   title: getRandomElement(TITLES),
   rating: getRandomInteger(CommonValue.MIN, RATING_MAX),
