@@ -19,11 +19,6 @@ const MONTH_NAMES = [
   `December`
 ];
 
-const EXTRA_SECTION_TITLES = [
-  `Top rated`,
-  `Most commented`
-];
-
 const IMAGES = [
   `made-for-each-other.png`,
   `popeye-meets-sinbad.png`,
@@ -95,6 +90,11 @@ const EMOJIES = [
   `angry`
 ];
 
+const ExtraSectionTitle = {
+  TOP_RATED: `Top rated`,
+  MOST_COMMENTED: `Most commented`
+};
+
 const FilmCardsShowCount = {
   ON_START: 5,
   BY_BUTTON: 5
@@ -134,7 +134,6 @@ export {
   FILMS_DATA_MIN,
   COMMENTS_SENTENCE_COUNT,
   MONTH_NAMES,
-  EXTRA_SECTION_TITLES,
   IMAGES,
   TITLES,
   NAMES,
@@ -142,6 +141,7 @@ export {
   COUNTRIES,
   DESCRIPTION_SENTENCES,
   EMOJIES,
+  ExtraSectionTitle,
   FilmCardsShowCount,
   CommonValue,
   RuntimeValue,

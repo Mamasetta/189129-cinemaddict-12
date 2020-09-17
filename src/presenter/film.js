@@ -17,11 +17,11 @@ export default class Film {
   init(film) {
     this._film = film;
 
-    this._filmCard = new FilmCardView(film);
-    this._filmDetails = new FilmDetailsView(film);
-
     const prevFilmCard = this._filmCard;
     const prevFilmDetails = this._filmDetails;
+
+    this._filmCard = new FilmCardView(film);
+    this._filmDetails = new FilmDetailsView(film);
 
     if (prevFilmCard === null || prevFilmDetails === null) {
       this._renderFilmCard(this._container, this._film);

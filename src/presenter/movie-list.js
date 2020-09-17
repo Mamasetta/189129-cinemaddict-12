@@ -1,4 +1,4 @@
-import {EXTRA_SECTION_TITLES, FilmCardsShowCount, SortingType} from '../constants.js';
+import {ExtraSectionTitle, FilmCardsShowCount, SortingType} from '../constants.js';
 import {getSortedFilmsByRating, getSortedFilmsByComments, sortingByDate, sortingByRating} from '../utils/film.js';
 import {RenderPosition, render} from '../utils/render.js';
 import {updateItem} from '../utils/common.js';
@@ -44,8 +44,6 @@ export default class MovieList {
     if (films.length === 0) {
       this._showNoFilmsText();
     } else {
-      EXTRA_SECTION_TITLES.forEach((title) => render(this._filmsSectionComponent, new FilmsExtraContainerView(title), RenderPosition.BEFOREEND));
-
       this._renderFilms();
       this._renderShowMoreButton();
       this._renderExtraFilms();
@@ -125,11 +123,16 @@ export default class MovieList {
     const filmPresenter = new FilmPresenter(container, this._bodyContainer, this._handleFilmChange);
 
     filmPresenter.init(film);
-    this._taskPresenter[film.id] = filmPresenter;
+    this._filmPresenter[film.id] = filmPresenter;
   }
 
   _renderExtraFilms() {
-    const [mostRatedContainer, mostCommentedContainer] = this._filmsSectionComponent.getElement().querySelectorAll(`.films-list--extra .films-list__container`);
+    const mostRatedContainer = new FilmsExtraContainerView(ExtraSectionTitle.TOP_RATED);
+    const mostCommentedContainer = new FilmsExtraContainerView(ExtraSectionTitle.MOST_COMMENTED);
+
+    [mostRatedContainer, mostCommentedContainer].forEach(
+        (container) => render(this._filmsSectionComponent, container, RenderPosition.BEFOREEND)
+    );
 
     getSortedFilmsByRating(this._films).forEach((film) => this._renderFilmCard(mostRatedContainer, film));
     getSortedFilmsByComments(this._films).forEach((film) => this._renderFilmCard(mostCommentedContainer, film));
