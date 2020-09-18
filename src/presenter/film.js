@@ -9,6 +9,8 @@ export default class Film {
     this._bodyContainer = bodyContainer;
     this._changeData = changeData;
 
+    this._filmCard = null;
+
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleHistoryClick = this._handleHistoryClick.bind(this);

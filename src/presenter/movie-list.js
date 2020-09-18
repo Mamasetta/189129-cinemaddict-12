@@ -46,7 +46,8 @@ export default class MovieList {
     } else {
       this._renderFilms();
       this._renderShowMoreButton();
-      this._renderExtraFilms();
+      this._renderMostRatedFilms();
+      this._renderMostCommentedFilms();
     }
   }
 
@@ -126,15 +127,23 @@ export default class MovieList {
     this._filmPresenter[film.id] = filmPresenter;
   }
 
-  _renderExtraFilms() {
-    const mostRatedContainer = new FilmsExtraContainerView(ExtraSectionTitle.TOP_RATED);
-    const mostCommentedContainer = new FilmsExtraContainerView(ExtraSectionTitle.MOST_COMMENTED);
+  _renderMostRatedFilms() {
+    const mostRatedList = new FilmsExtraContainerView(ExtraSectionTitle.TOP_RATED);
+    render(this._filmsSectionComponent, mostRatedList, RenderPosition.BEFOREEND);
 
-    [mostRatedContainer, mostCommentedContainer].forEach(
-        (container) => render(this._filmsSectionComponent, container, RenderPosition.BEFOREEND)
-    );
+    const mostRatedContainer = new FilmsContainerView();
+    render(mostRatedList, mostRatedContainer, RenderPosition.BEFOREEND);
 
     getSortedFilmsByRating(this._films).forEach((film) => this._renderFilmCard(mostRatedContainer, film));
+  }
+
+  _renderMostCommentedFilms() {
+    const mostCommentedList = new FilmsExtraContainerView(ExtraSectionTitle.MOST_COMMENTED);
+    render(this._filmsSectionComponent, mostCommentedList, RenderPosition.BEFOREEND);
+
+    const mostCommentedContainer = new FilmsContainerView();
+    render(mostCommentedList, mostCommentedContainer, RenderPosition.BEFOREEND);
+
     getSortedFilmsByComments(this._films).forEach((film) => this._renderFilmCard(mostCommentedContainer, film));
   }
 
