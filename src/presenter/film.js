@@ -3,13 +3,20 @@ import FilmDetailsView from '../view/film-details.js';
 
 import {RenderPosition, render, replace, remove} from '../utils/render.js';
 
+const Mode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};
+
 export default class Film {
-  constructor(container, bodyContainer, changeData) {
+  constructor(container, bodyContainer, changeData, changeMode) {
     this._container = container;
     this._bodyContainer = bodyContainer;
     this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._filmCard = null;
+    this._mode = Mode.DEFAULT;
 
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -25,21 +32,11 @@ export default class Film {
     this._filmCard = new FilmCardView(film);
     this._filmDetails = new FilmDetailsView(film);
 
-    if (prevFilmCard === null || prevFilmDetails === null) {
-      this._renderFilmCard(this._container, this._film);
-      return;
-    }
-
-    if (this._container.getElement().contains(prevFilmCard.getElement())) {
-      replace(this._filmCard, prevFilmCard);
-    }
-
-    if (this._bodyContainer.contains(prevFilmDetails.getElement())) {
-      replace(this._filmDetails, prevFilmDetails);
-    }
-
-    remove(prevFilmCard);
-    remove(prevFilmDetails);
+    this._filmCard.setFilmClickHandler(() => {
+      this._renderFilmDetails();
+      this._changeMode();
+      this._mode = Mode.EDITING;
+    });
 
     this._filmCard.setWatchlistClickHandler(this._handleWatchlistClick);
     this._filmCard.setFavoriteClickHandler(this._handleFavoriteClick);
@@ -48,6 +45,28 @@ export default class Film {
     this._filmDetails.setWatchlistClickHandler(this._handleWatchlistClick);
     this._filmDetails.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmDetails.setHistoryClickHandler(this._handleHistoryClick);
+
+    this._filmDetails.setCloseButtonClickHandler(() => {
+      this._filmDetails.getElement().remove();
+      this._filmDetails.removeElement();
+      this._mode = Mode.DEFAULT;
+    });
+
+    if (prevFilmCard === null || prevFilmDetails === null) {
+      this._renderFilmCard(this._container, this._film);
+      return;
+    }
+
+    if (this._mode === Mode.DEFAULT) {
+      replace(this._filmCard, prevFilmCard);
+    }
+
+    if (this._mode === Mode.EDITING) {
+      replace(this._filmDetails, prevFilmDetails);
+    }
+
+    remove(prevFilmCard);
+    remove(prevFilmDetails);
   }
 
   destroy() {
@@ -55,11 +74,14 @@ export default class Film {
     remove(this._filmDetails);
   }
 
-  _renderFilmCard(containerElement) {
-    this._filmCard.setFilmClickHandler(() => {
-      this._renderFilmDetails();
-    });
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._filmDetails.getElement().remove();
+      this._filmDetails.removeElement();
+    }
+  }
 
+  _renderFilmCard(containerElement) {
     render(containerElement, this._filmCard, RenderPosition.BEFOREEND);
   }
 
@@ -72,11 +94,6 @@ export default class Film {
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
-
-    this._filmDetails.setCloseButtonClickHandler(() => {
-      this._filmDetails.getElement().remove();
-      this._filmDetails.removeElement();
-    });
 
     document.addEventListener(`keydown`, onEscKeyDown);
 

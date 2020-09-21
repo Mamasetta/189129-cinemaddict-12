@@ -90,6 +90,13 @@ const EMOJIES = [
   `angry`
 ];
 
+const EmojiType = {
+  SMILE: `smile`,
+  SLEEPING: `sleeping`,
+  PUKE: `puke`,
+  ANGRY: `angry`
+}
+
 const ExtraSectionTitle = {
   TOP_RATED: `Top rated`,
   MOST_COMMENTED: `Most commented`
@@ -141,6 +148,7 @@ export {
   COUNTRIES,
   DESCRIPTION_SENTENCES,
   EMOJIES,
+  EmojiType,
   ExtraSectionTitle,
   FilmCardsShowCount,
   CommonValue,
