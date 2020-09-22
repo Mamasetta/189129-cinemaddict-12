@@ -1,6 +1,6 @@
 import SmartView from './smart.js';
-import {formatFullDate, formatCommentDate} from '../utils/film.js';
-import {EMOJIES, EmojiType} from '../constants.js';
+import {formatRuntime, formatDate} from '../utils/film.js';
+import {EMOJIES, EmojiType, FormatKey} from '../constants.js';
 
 const getCheckedAttribute = (control) => control ? `checked` : ``;
 
@@ -8,7 +8,7 @@ const createGenreTemplate = (genre) =>
   `<span class="film-details__genre">${genre}</span>`;
 
 const createCommentTemplate = (comment) => {
-  const commentDateView = formatCommentDate(comment.date);
+  const commentDateView = formatDate(comment.date, FormatKey.COMMENT);
 
   return (
     `<li class="film-details__comment">
@@ -52,7 +52,7 @@ const createChoosingEmojiTemplate = (emojies) => {
   return emojies
     .map((emoji) => {
       return (
-        `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${emoji === getSelectedEmoji(emoji) ? `checked` : ``}>
+        `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
         <label class="film-details__emoji-label" for="emoji-${emoji}">
           <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji" data-emoji-type="${emoji}">
         </label>`
@@ -63,7 +63,8 @@ const createChoosingEmojiTemplate = (emojies) => {
 const createFilmDetailsTemplate = (filmData, emoji) => {
   const {image, title, rating, director, writers, cast, releaseDate, runtime, country, genres, description, comments, ageRating, isInWatchlist, isFavorite, isHistory} = filmData;
 
-  const releaseDateVeiw = formatFullDate(releaseDate);
+  const releaseDateVeiw = formatDate(releaseDate, FormatKey.DETAILS);
+  const runtimeView = formatRuntime(runtime);
   const genresTitle = genres.length > 1 ? `Genres` : `Genre`;
   const genresTemplate = genres.map((it) => createGenreTemplate(it)).join(`\n`);
   const commentsTemplate = comments.map((it) => createCommentTemplate(it)).join(`\n`);
@@ -113,7 +114,7 @@ const createFilmDetailsTemplate = (filmData, emoji) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${runtime}</td>
+                  <td class="film-details__cell">${runtimeView}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>

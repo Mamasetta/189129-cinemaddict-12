@@ -158,6 +158,5 @@ export default class MovieList {
     this._films = updateItem(this._films, updatedFilm);
     this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
     this._filmPresenter[updatedFilm.id].init(updatedFilm);
-    this._filmPresenter.restoreHandlers();
   }
 }
