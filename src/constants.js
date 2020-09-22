@@ -95,7 +95,7 @@ const EmojiType = {
   SLEEPING: `sleeping`,
   PUKE: `puke`,
   ANGRY: `angry`
-}
+};
 
 const ExtraSectionTitle = {
   TOP_RATED: `Top rated`,
