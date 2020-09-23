@@ -45,6 +45,7 @@ export default class Film {
     this._filmDetails.setWatchlistClickHandler(this._handleWatchlistClick);
     this._filmDetails.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmDetails.setHistoryClickHandler(this._handleHistoryClick);
+    this._filmDetails.setInnerHandlers();
 
     this._filmDetails.setCloseButtonClickHandler(() => {
       this._filmDetails.getElement().remove();
