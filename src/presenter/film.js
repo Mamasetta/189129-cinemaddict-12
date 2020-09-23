@@ -33,8 +33,8 @@ export default class Film {
     this._filmDetails = new FilmDetailsView(film);
 
     this._filmCard.setFilmClickHandler(() => {
-      this._renderFilmDetails();
       this._changeMode();
+      this._renderFilmDetails();
       this._mode = Mode.EDITING;
     });
 
@@ -49,7 +49,6 @@ export default class Film {
 
     this._filmDetails.setCloseButtonClickHandler(() => {
       this._filmDetails.getElement().remove();
-      this._filmDetails.removeElement();
       this._mode = Mode.DEFAULT;
     });
 
@@ -58,11 +57,11 @@ export default class Film {
       return;
     }
 
-    if (this._mode === Mode.DEFAULT) {
+    if (this._container.getElement().contains(prevFilmCard.getElement())) {
       replace(this._filmCard, prevFilmCard);
     }
 
-    if (this._mode === Mode.EDITING) {
+    if (this._bodyContainer.contains(prevFilmDetails.getElement())) {
       replace(this._filmDetails, prevFilmDetails);
     }
 
@@ -78,7 +77,6 @@ export default class Film {
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
       this._filmDetails.getElement().remove();
-      this._filmDetails.removeElement();
     }
   }
 
@@ -91,7 +89,6 @@ export default class Film {
       if (evt.key === `Escape` || evt.key === `Esc`) {
         evt.preventDefault();
         this._filmDetails.getElement().remove();
-        this._filmDetails.removeElement();
         document.removeEventListener(`keydown`, onEscKeyDown);
       }
     };
