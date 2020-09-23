@@ -123,11 +123,11 @@ export default class MovieList {
     });
   }
 
-  _renderFilmCard(container, film, presenter) {
+  _renderFilmCard(container, film, presenterStore) {
     const filmPresenter = new FilmPresenter(container, this._bodyContainer, this._handleFilmChange, this._handleModeChange);
 
     filmPresenter.init(film);
-    presenter[film.id] = filmPresenter;
+    presenterStore[film.id] = filmPresenter;
   }
 
   _renderMostRatedFilms() {
@@ -152,8 +152,16 @@ export default class MovieList {
 
   _handleModeChange() {
     Object
-      .values(this._filmPresenter)
-      .forEach((presenter) => presenter.resetView());
+    .values(this._filmPresenter)
+    .forEach((presenter) => presenter.resetView());
+
+    Object
+    .values(this._mostRatedFilmPresenter)
+    .forEach((presenter) => presenter.resetView());
+
+    Object
+    .values(this._mostCommentedFilmPresenter)
+    .forEach((presenter) => presenter.resetView());
   }
 
   _handleFilmChange(updatedFilm) {
