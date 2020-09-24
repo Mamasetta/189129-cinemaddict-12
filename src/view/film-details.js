@@ -189,12 +189,16 @@ export default class FilmDetails extends SmartView {
     return createFilmDetailsTemplate(this._filmData, this._emoji);
   }
 
+  setInnerHandlers() {
+    this.setEmojiClickHandler(this._callback.emojiClick);
+  }
+
   restoreHandlers() {
     this.setCloseButtonClickHandler(this._callback.closeButtonClick);
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setHistoryClickHandler(this._callback.historyClick);
-    this.setEmojiClickHandler(this._callback.emojiClick);
+    this.setInnerHandlers();
   }
 
   setCloseButtonClickHandler(callback) {
