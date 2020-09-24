@@ -1,6 +1,6 @@
-import AbstractView from './abstract.js';
+import SmartView from './smart.js';
 import {formatFullDate, formatCommentDate} from '../utils/film.js';
-import {EMOJIES} from '../constants.js';
+import {EMOJIES, EmojiType} from '../constants.js';
 
 const getCheckedAttribute = (control) => control ? `checked` : ``;
 
@@ -27,22 +27,44 @@ const createCommentTemplate = (comment) => {
   );
 };
 
+const getSelectedEmoji = (emoji) => {
+  let image = null;
+
+  switch (emoji) {
+    case EmojiType.SMILE:
+      image = EmojiType.SMILE;
+      break;
+    case EmojiType.ANGRY:
+      image = EmojiType.ANGRY;
+      break;
+    case EmojiType.SLEEPING:
+      image = EmojiType.SLEEPING;
+      break;
+    case EmojiType.PUKE:
+      image = EmojiType.PUKE;
+      break;
+  }
+
+  return `<img src="images/emoji/${image}.png" width="55" height="55" alt="emoji">`;
+};
+
 const createChoosingEmojiTemplate = (emojies) => {
   return emojies
     .map((emoji) => {
       return (
-        `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}">
+        `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji}" value="${emoji}" ${emoji === getSelectedEmoji(emoji) ? `checked` : ``}>
         <label class="film-details__emoji-label" for="emoji-${emoji}">
-          <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
+          <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji" data-emoji-type="${emoji}">
         </label>`
       );
     }).join(`\n`);
 };
 
-const createFilmDetailsTemplate = (filmData) => {
+const createFilmDetailsTemplate = (filmData, emoji) => {
   const {image, title, rating, director, writers, cast, releaseDate, runtime, country, genres, description, comments, ageRating, isInWatchlist, isFavorite, isHistory} = filmData;
 
   const releaseDateVeiw = formatFullDate(releaseDate);
+  const genresTitle = genres.length > 1 ? `Genres` : `Genre`;
   const genresTemplate = genres.map((it) => createGenreTemplate(it)).join(`\n`);
   const commentsTemplate = comments.map((it) => createCommentTemplate(it)).join(`\n`);
 
@@ -98,7 +120,7 @@ const createFilmDetailsTemplate = (filmData) => {
                   <td class="film-details__cell">${country}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">Genres</td>
+                  <td class="film-details__term">${genresTitle}</td>
                   <td class="film-details__cell">
                     ${genresTemplate}
                 </tr>
@@ -131,7 +153,9 @@ const createFilmDetailsTemplate = (filmData) => {
             </ul>
 
             <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label"></div>
+              <div for="add-emoji" class="film-details__add-emoji-label">
+                ${emoji ? getSelectedEmoji(emoji) : ``}
+              </div>
 
               <label class="film-details__comment-label">
                 <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -148,15 +172,32 @@ const createFilmDetailsTemplate = (filmData) => {
   );
 };
 
-export default class FilmDetails extends AbstractView {
+export default class FilmDetails extends SmartView {
   constructor(filmData) {
     super();
     this._filmData = filmData;
+    this._emoji = null;
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._historyClickHandler = this._historyClickHandler.bind(this);
+    this._emojiClickHandler = this._emojiClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._filmData);
+    return createFilmDetailsTemplate(this._filmData, this._emoji);
+  }
+
+  setInnerHandlers() {
+    this.setEmojiClickHandler(this._callback.emojiClick);
+  }
+
+  restoreHandlers() {
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setHistoryClickHandler(this._callback.historyClick);
+    this.setInnerHandlers();
   }
 
   setCloseButtonClickHandler(callback) {
@@ -164,8 +205,66 @@ export default class FilmDetails extends AbstractView {
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closeButtonClickHandler);
   }
 
+  setWatchlistClickHandler(callback) {
+    this._callback.watchlistClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, this._watchlistClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, this._favoriteClickHandler);
+  }
+
+  setHistoryClickHandler(callback) {
+    this._callback.historyClick = callback;
+    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, this._historyClickHandler);
+  }
+
+  setEmojiClickHandler(callback) {
+    this._callback.emojiClick = callback;
+    this.getElement().querySelectorAll(`.film-details__emoji-label`).forEach((element) => element.addEventListener(`click`, this._emojiClickHandler));
+  }
+
   _closeButtonClickHandler(evt) {
     evt.preventDefault();
     this._callback.closeButtonClick();
+  }
+
+  _watchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchlistClick();
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  _historyClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.historyClick();
+  }
+
+  _emojiClickHandler(evt) {
+    evt.preventDefault();
+    this._updateEmoji(evt.target.dataset.emojiType);
+    this.updateElement();
+  }
+
+  _updateEmoji(emoji) {
+    switch (emoji) {
+      case EmojiType.SMILE:
+        this._emoji = EmojiType.SMILE;
+        break;
+      case EmojiType.SLEEPING:
+        this._emoji = EmojiType.SLEEPING;
+        break;
+      case EmojiType.ANGRY:
+        this._emoji = EmojiType.ANGRY;
+        break;
+      case EmojiType.PUKE:
+        this._emoji = EmojiType.PUKE;
+        break;
+    }
   }
 }

@@ -29,6 +29,24 @@ const createElement = (template) => {
   return newElement.firstChild; // 3
 };
 
+const replace = (newChild, oldChild) => {
+  if (oldChild instanceof AbstractView) {
+    oldChild = oldChild.getElement();
+  }
+
+  if (newChild instanceof AbstractView) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error(`Can't replace unexisting elements`);
+  }
+
+  parent.replaceChild(newChild, oldChild);
+};
+
 const remove = (component) => {
   if (!(component instanceof AbstractView)) {
     throw new Error(`Can remove only components`);
@@ -42,5 +60,6 @@ export {
   RenderPosition,
   render,
   createElement,
+  replace,
   remove
 };

@@ -6,9 +6,9 @@ export default class FooterStatistics extends AbstractView {
     this._count = count;
   }
 
-  getTemplate(count) {
+  getTemplate() {
     return (
-      `<p>${count} movies inside</p>`
+      `<p>${this._count} movies inside</p>`
     );
   }
 }
