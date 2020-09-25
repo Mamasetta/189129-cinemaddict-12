@@ -28,8 +28,8 @@ const createCommentTemplate = (comment) => {
 };
 
 const getSelectedEmoji = (emoji) => {
-  let image = null;
-  choosingEmoji(emoji, image);
+  const image = choosingEmoji(emoji);
+
   return `<img src="images/emoji/${image}.png" width="55" height="55" alt="emoji">`;
 };
 const createChoosingEmojiTemplate = (emojies) => {
@@ -237,6 +237,6 @@ export default class FilmDetails extends SmartView {
   }
 
   _updateEmoji(emoji) {
-    choosingEmoji(emoji, this._emoji);
+    this._emoji = choosingEmoji(emoji);
   }
 }

@@ -36,7 +36,9 @@ const sortingByDate = (firstFilm, secondFilm) => secondFilm.releaseDate.getTime(
 
 const sortingByRating = (firstFilm, secondFilm) => secondFilm.rating - firstFilm.rating;
 
-const choosingEmoji = (emoji, variable) => {
+const choosingEmoji = (emoji) => {
+  let variable = null;
+
   switch (emoji) {
     case EmojiType.SMILE:
       variable = EmojiType.SMILE;
