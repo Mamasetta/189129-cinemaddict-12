@@ -1,6 +1,6 @@
 import SmartView from './smart.js';
-import {formatRuntime, formatDate} from '../utils/film.js';
-import {EMOJIES, EmojiType, FormatKey} from '../constants.js';
+import {formatRuntime, formatDate, choosingEmoji} from '../utils/film.js';
+import {EMOJIES, FormatKey} from '../constants.js';
 
 const getCheckedAttribute = (control) => control ? `checked` : ``;
 
@@ -29,25 +29,9 @@ const createCommentTemplate = (comment) => {
 
 const getSelectedEmoji = (emoji) => {
   let image = null;
-
-  switch (emoji) {
-    case EmojiType.SMILE:
-      image = EmojiType.SMILE;
-      break;
-    case EmojiType.ANGRY:
-      image = EmojiType.ANGRY;
-      break;
-    case EmojiType.SLEEPING:
-      image = EmojiType.SLEEPING;
-      break;
-    case EmojiType.PUKE:
-      image = EmojiType.PUKE;
-      break;
-  }
-
+  choosingEmoji(emoji, image);
   return `<img src="images/emoji/${image}.png" width="55" height="55" alt="emoji">`;
 };
-
 const createChoosingEmojiTemplate = (emojies) => {
   return emojies
     .map((emoji) => {
@@ -191,6 +175,7 @@ export default class FilmDetails extends SmartView {
 
   setInnerHandlers() {
     this.setEmojiClickHandler(this._callback.emojiClick);
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
   }
 
   restoreHandlers() {
@@ -221,14 +206,13 @@ export default class FilmDetails extends SmartView {
     this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, this._historyClickHandler);
   }
 
-  setEmojiClickHandler(callback) {
-    this._callback.emojiClick = callback;
+  setEmojiClickHandler() {
     this.getElement().querySelectorAll(`.film-details__emoji-label`).forEach((element) => element.addEventListener(`click`, this._emojiClickHandler));
   }
 
   _closeButtonClickHandler(evt) {
     evt.preventDefault();
-    this._callback.closeButtonClick();
+    this.getElement().remove();
   }
 
   _watchlistClickHandler(evt) {
@@ -253,19 +237,6 @@ export default class FilmDetails extends SmartView {
   }
 
   _updateEmoji(emoji) {
-    switch (emoji) {
-      case EmojiType.SMILE:
-        this._emoji = EmojiType.SMILE;
-        break;
-      case EmojiType.SLEEPING:
-        this._emoji = EmojiType.SLEEPING;
-        break;
-      case EmojiType.ANGRY:
-        this._emoji = EmojiType.ANGRY;
-        break;
-      case EmojiType.PUKE:
-        this._emoji = EmojiType.PUKE;
-        break;
-    }
+    choosingEmoji(emoji, this._emoji);
   }
 }
