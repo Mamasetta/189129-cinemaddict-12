@@ -1,6 +1,27 @@
 import SmartView from './smart.js';
-import {formatRuntime, formatDate, choosingEmoji} from '../utils/film.js';
-import {EMOJIES, FormatKey} from '../constants.js';
+import {formatRuntime, formatDate} from '../utils/film.js';
+import {EMOJIES, EmojiType, FormatKey} from '../constants.js';
+
+const choosingEmoji = (emoji) => {
+  let variable = null;
+
+  switch (emoji) {
+    case EmojiType.SMILE:
+      variable = EmojiType.SMILE;
+      break;
+    case EmojiType.ANGRY:
+      variable = EmojiType.ANGRY;
+      break;
+    case EmojiType.SLEEPING:
+      variable = EmojiType.SLEEPING;
+      break;
+    case EmojiType.PUKE:
+      variable = EmojiType.PUKE;
+      break;
+  }
+
+  return variable;
+};
 
 const getCheckedAttribute = (control) => control ? `checked` : ``;
 
@@ -44,7 +65,7 @@ const createChoosingEmojiTemplate = (emojies) => {
     }).join(`\n`);
 };
 
-const createFilmDetailsTemplate = (filmData, emoji) => {
+const createFilmDetailsTemplate = (filmData) => {
   const {image, title, rating, director, writers, cast, releaseDate, runtime, country, genres, description, comments, ageRating, isInWatchlist, isFavorite, isHistory} = filmData;
 
   const releaseDateVeiw = formatDate(releaseDate, FormatKey.DETAILS);
@@ -138,9 +159,7 @@ const createFilmDetailsTemplate = (filmData, emoji) => {
             </ul>
 
             <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label">
-                ${emoji ? getSelectedEmoji(emoji) : ``}
-              </div>
+              <div for="add-emoji" class="film-details__add-emoji-label"></div>
 
               <label class="film-details__comment-label">
                 <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -233,7 +252,7 @@ export default class FilmDetails extends SmartView {
   _emojiClickHandler(evt) {
     evt.preventDefault();
     this._updateEmoji(evt.target.dataset.emojiType);
-    this.updateElement();
+    this.getElement().querySelector(`.film-details__add-emoji-label`).innerHTML = getSelectedEmoji(evt.target.dataset.emojiType);
   }
 
   _updateEmoji(emoji) {
