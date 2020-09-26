@@ -121,6 +121,17 @@ const FormatKey = {
   COMMENT: `comment`
 };
 
+const UserAction = {
+  ADD_WATCHLIST: `ADD_WATCHLIST`,
+  ADD_WATCHED: `ADD_WATCHED`,
+  ADD_FAVORITE: `ADD_FAVORITE`
+};
+
+const UpdateType = {
+  MINOR: `MINOR`,
+  MAJOR: `MAJOR`
+};
+
 export {
   RATING_MAX,
   EXTRA_COUNT,
@@ -142,5 +153,7 @@ export {
   DateValue,
   RenderPosition,
   SortingType,
-  FormatKey
+  FormatKey,
+  UserAction,
+  UpdateType
 };
