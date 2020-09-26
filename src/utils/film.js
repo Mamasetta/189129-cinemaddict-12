@@ -1,25 +1,24 @@
-import {MONTH_NAMES, EXTRA_COUNT} from '../constants.js';
+import {EXTRA_COUNT, EmojiType, FormatKey} from '../constants.js';
+import moment from 'moment';
 
-const castTimeFormat = (value) => value < 10 ? `0${value}` : String(value);
-
-const formatDate = (date) => date.getFullYear();
-
-const formatFullDate = (date) => {
-  const day = castTimeFormat(date.getDate());
-  const month = MONTH_NAMES[String(date.getMonth())];
-  const year = date.getFullYear();
-
-  return `${day} ${month} ${year}`;
+const formatRuntime = (minutes) => {
+  const duration = moment.duration(minutes, `minutes`);
+  const format = minutes > 60 ? `H[h] mm[m]` : `mm[m]`;
+  return moment.utc(duration.as(`milliseconds`)).format(format).toString();
 };
 
-const formatCommentDate = (date) => {
-  const year = String(date.getFullYear());
-  const month = castTimeFormat(date.getMonth() + 1);
-  const day = castTimeFormat(date.getDate());
-  const hours = castTimeFormat(date.getHours() % 24);
-  const minutes = castTimeFormat(date.getMinutes());
-
-  return `${year}/${month}/${day}  ${hours}:${minutes}`;
+const formatDate = (date, formatKey) => {
+  if (date instanceof Date && formatKey) {
+    switch (formatKey) {
+      case FormatKey.CARD:
+        return moment(date).year();
+      case FormatKey.DETAILS:
+        return moment(date).format(`DD MMMM YYYY`);
+      case FormatKey.COMMENT:
+        return moment(date).fromNow();
+    }
+  }
+  throw new Error(`incorrect data`);
 };
 
 const getSortedFilmsByRating = (sortingFilms) => sortingFilms.slice().sort((a, b) => b.rating - a.rating).slice(0, EXTRA_COUNT);
@@ -37,12 +36,33 @@ const sortingByDate = (firstFilm, secondFilm) => secondFilm.releaseDate.getTime(
 
 const sortingByRating = (firstFilm, secondFilm) => secondFilm.rating - firstFilm.rating;
 
+const choosingEmoji = (emoji) => {
+  let variable = null;
+
+  switch (emoji) {
+    case EmojiType.SMILE:
+      variable = EmojiType.SMILE;
+      break;
+    case EmojiType.ANGRY:
+      variable = EmojiType.ANGRY;
+      break;
+    case EmojiType.SLEEPING:
+      variable = EmojiType.SLEEPING;
+      break;
+    case EmojiType.PUKE:
+      variable = EmojiType.PUKE;
+      break;
+  }
+
+  return variable;
+};
+
 export {
+  formatRuntime,
   formatDate,
-  formatFullDate,
-  formatCommentDate,
   getSortedFilmsByRating,
   getSortedFilmsByComments,
   sortingByDate,
-  sortingByRating
+  sortingByRating,
+  choosingEmoji
 };

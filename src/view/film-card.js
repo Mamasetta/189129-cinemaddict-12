@@ -1,12 +1,14 @@
 import AbstractView from './abstract.js';
-import {formatDate} from '../utils/film.js';
+import {formatRuntime, formatDate} from '../utils/film.js';
+import {FormatKey} from '../constants.js';
 
 const getActiveClass = (control) => control ? `film-card__controls-item--active` : ``;
 
 const createFilmCardTemplate = (filmData) => {
   const {image, title, rating, releaseDate, runtime, genres, description, comments, isInWatchlist, isFavorite, isHistory} = filmData;
 
-  const releaseDateView = formatDate(releaseDate);
+  const releaseDateView = formatDate(releaseDate, FormatKey.CARD);
+  const runtimeView = formatRuntime(runtime);
 
   return (
     `<article class="film-card">
@@ -14,7 +16,7 @@ const createFilmCardTemplate = (filmData) => {
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${releaseDateView}</span>
-        <span class="film-card__duration">${runtime}</span>
+        <span class="film-card__duration">${runtimeView}</span>
         <span class="film-card__genre">${genres.join(`, `)}</span>
       </p>
       <img src="./images/posters/${image}" alt="" class="film-card__poster">

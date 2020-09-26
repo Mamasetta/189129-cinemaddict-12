@@ -47,11 +47,6 @@ export default class Film {
     this._filmDetails.setHistoryClickHandler(this._handleHistoryClick);
     this._filmDetails.setInnerHandlers();
 
-    this._filmDetails.setCloseButtonClickHandler(() => {
-      this._filmDetails.getElement().remove();
-      this._mode = Mode.DEFAULT;
-    });
-
     if (prevFilmCard === null || prevFilmDetails === null) {
       this._renderFilmCard(this._container, this._film);
       return;

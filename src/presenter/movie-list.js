@@ -151,17 +151,15 @@ export default class MovieList {
   }
 
   _handleModeChange() {
-    Object
-    .values(this._filmPresenter)
-    .forEach((presenter) => presenter.resetView());
+    [
+      ...Object.values(this._filmPresenter),
+      ...Object.values(this._mostCommentedFilmPresenter),
+      ...Object.values(this._mostRatedFilmPresenter)
+    ].forEach((presenter) => presenter.resetView());
+  }
 
-    Object
-    .values(this._mostRatedFilmPresenter)
-    .forEach((presenter) => presenter.resetView());
-
-    Object
-    .values(this._mostCommentedFilmPresenter)
-    .forEach((presenter) => presenter.resetView());
+  _initFilm(presenterStore, film) {
+    presenterStore[film.id].init(film);
   }
 
   _handleFilmChange(updatedFilm) {
@@ -169,15 +167,15 @@ export default class MovieList {
     this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
 
     if (this._filmPresenter[updatedFilm.id]) {
-      this._filmPresenter[updatedFilm.id].init(updatedFilm);
+      this._initFilm(this._filmPresenter, updatedFilm);
     }
 
     if (this._mostRatedFilmPresenter[updatedFilm.id]) {
-      this._mostRatedFilmPresenter[updatedFilm.id].init(updatedFilm);
+      this._initFilm(this._mostRatedFilmPresenter, updatedFilm);
     }
 
     if (this._mostCommentedFilmPresenter[updatedFilm.id]) {
-      this._mostCommentedFilmPresenter[updatedFilm.id].init(updatedFilm);
+      this._initFilm(this._mostCommentedFilmPresenter, updatedFilm);
     }
   }
 }

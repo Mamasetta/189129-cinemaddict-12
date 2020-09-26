@@ -1,5 +1,5 @@
 import {getRandomInteger, getRandomElement, getRandomElements, getRandomBoolean, getNewArray} from '../utils/common.js';
-import {RATING_MAX, FILMS_DATA_MIN, COMMENTS_SENTENCE_COUNT, IMAGES, TITLES, NAMES, GENRES, COUNTRIES, DESCRIPTION_SENTENCES, EMOJIES, CommonValue, RuntimeValue, DateValue} from '../constants.js';
+import {RATING_MAX, FILMS_DATA_MIN, COMMENTS_SENTENCE_COUNT, RUNTIME_MAX, IMAGES, TITLES, NAMES, GENRES, COUNTRIES, DESCRIPTION_SENTENCES, EMOJIES, CommonValue, DateValue} from '../constants.js';
 
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
@@ -16,12 +16,7 @@ const getReleaseDate = () => {
   return releaseDate;
 };
 
-const getRuntime = () => {
-  const hours = getRandomInteger(RuntimeValue.HOURS_MIN, CommonValue.MAX);
-  const minutes = getRandomInteger(CommonValue.MIN, RuntimeValue.MINUTES_MAX);
-
-  return `${hours}h ${minutes}m`;
-};
+const getRuntime = () => getRandomInteger(CommonValue.MIN, RUNTIME_MAX);
 
 const getCommentDate = () => {
   const commentDate = new Date();

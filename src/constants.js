@@ -3,21 +3,7 @@ const EXTRA_COUNT = 2;
 const FILMS_COUNT = 20;
 const FILMS_DATA_MIN = 1;
 const COMMENTS_SENTENCE_COUNT = 3;
-
-const MONTH_NAMES = [
-  `January`,
-  `February`,
-  `March`,
-  `April`,
-  `May`,
-  `June`,
-  `July`,
-  `August`,
-  `September`,
-  `October`,
-  `November`,
-  `December`
-];
+const RUNTIME_MAX = 180;
 
 const IMAGES = [
   `made-for-each-other.png`,
@@ -112,11 +98,6 @@ const CommonValue = {
   MAX: 5
 };
 
-const RuntimeValue = {
-  HOURS_MIN: 1,
-  MINUTES_MAX: 60
-};
-
 const DateValue = {
   DATE_MAX: 7,
   HOURS_MAX: 24,
@@ -134,13 +115,19 @@ const SortingType = {
   RATING: `rating`
 };
 
+const FormatKey = {
+  CARD: `card`,
+  DETAILS: `details`,
+  COMMENT: `comment`
+};
+
 export {
   RATING_MAX,
   EXTRA_COUNT,
   FILMS_COUNT,
   FILMS_DATA_MIN,
   COMMENTS_SENTENCE_COUNT,
-  MONTH_NAMES,
+  RUNTIME_MAX,
   IMAGES,
   TITLES,
   NAMES,
@@ -152,8 +139,8 @@ export {
   ExtraSectionTitle,
   FilmCardsShowCount,
   CommonValue,
-  RuntimeValue,
   DateValue,
   RenderPosition,
-  SortingType
+  SortingType,
+  FormatKey
 };
