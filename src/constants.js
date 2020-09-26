@@ -4,6 +4,7 @@ const FILMS_COUNT = 20;
 const FILMS_DATA_MIN = 1;
 const COMMENTS_SENTENCE_COUNT = 3;
 const RUNTIME_MAX = 180;
+const UPDATE_FILM = `UPDATE_FILM`;
 
 const IMAGES = [
   `made-for-each-other.png`,
@@ -121,12 +122,6 @@ const FormatKey = {
   COMMENT: `comment`
 };
 
-const UserAction = {
-  ADD_WATCHLIST: `ADD_WATCHLIST`,
-  ADD_WATCHED: `ADD_WATCHED`,
-  ADD_FAVORITE: `ADD_FAVORITE`
-};
-
 const UpdateType = {
   MINOR: `MINOR`,
   MAJOR: `MAJOR`
@@ -139,6 +134,7 @@ export {
   FILMS_DATA_MIN,
   COMMENTS_SENTENCE_COUNT,
   RUNTIME_MAX,
+  UPDATE_FILM,
   IMAGES,
   TITLES,
   NAMES,
@@ -154,6 +150,5 @@ export {
   RenderPosition,
   SortingType,
   FormatKey,
-  UserAction,
   UpdateType
 };
