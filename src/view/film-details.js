@@ -243,9 +243,7 @@ export default class FilmDetails extends SmartView {
 
   setDeleteCommentButtonClickHandler(callback) {
     this._callback.deleteCommentButtonClick = callback;
-    this.getElement()
-      .querySelectorAll(`.film-details__comment-delete`)
-      .forEach((element) => element.addEventListener(`click`, this._deleteCommentButtonClickHandler));
+    this.getElement().querySelectorAll(`.film-details__comment-delete`).forEach((element) => element.addEventListener(`click`, this._deleteCommentButtonClickHandler));
   }
 
   _closeButtonClickHandler(evt) {

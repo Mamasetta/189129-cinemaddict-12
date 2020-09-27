@@ -31,8 +31,6 @@ export default class MovieList {
 
     this._showingFilmsCount = FilmCardsShowCount.ON_START;
     this._currentSortingType = SortingType.DEFAULT;
-    this._moviesModel.addObserver(this._handleModelEvent);
-    this._filtersModel.addObserver(this._handleModelEvent);
 
     this._filmPresenter = {};
     this._mostRatedFilmPresenter = {};
@@ -43,6 +41,9 @@ export default class MovieList {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
+
+    this._moviesModel.addObserver(this._handleModelEvent);
+    this._filtersModel.addObserver(this._handleModelEvent);
   }
 
   init() {
