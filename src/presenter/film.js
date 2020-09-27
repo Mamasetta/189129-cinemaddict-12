@@ -2,7 +2,11 @@ import FilmCardView from '../view/film-card.js';
 import FilmDetailsView from '../view/film-details.js';
 
 import {RenderPosition, render, replace, remove} from '../utils/render.js';
-import {UPDATE_FILM, UpdateType} from "../constants.js";
+import {generateId} from '../mock/films.js';
+import {UserAction, UpdateType} from "../constants.js";
+import {EmojiType} from '../constants.js';
+
+const ENTER_KEY = `Enter`;
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -22,6 +26,8 @@ export default class Film {
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
     this._handleHistoryClick = this._handleHistoryClick.bind(this);
+    this._handleDeleteCommentButtonClick = this._handleDeleteCommentButtonClick.bind(this);
+    this._handleEnterKeyDown = this._handleEnterKeyDown.bind(this);
   }
 
   init(film) {
@@ -46,6 +52,8 @@ export default class Film {
     this._filmDetails.setWatchlistClickHandler(this._handleWatchlistClick);
     this._filmDetails.setFavoriteClickHandler(this._handleFavoriteClick);
     this._filmDetails.setHistoryClickHandler(this._handleHistoryClick);
+    this._filmDetails.setDeleteCommentButtonClickHandler(this._handleDeleteCommentButtonClick);
+    this._filmDetails.setEnterKeyDown(this._handleEnterKeyDown);
     this._filmDetails.setInnerHandlers();
 
     if (prevFilmCard === null || prevFilmDetails === null) {
@@ -86,17 +94,19 @@ export default class Film {
         evt.preventDefault();
         this._filmDetails.getElement().remove();
         document.removeEventListener(`keydown`, onEscKeyDown);
+        document.removeEventListener(`keydown`, this._handleEnterKeyDown);
       }
     };
 
     document.addEventListener(`keydown`, onEscKeyDown);
+    document.addEventListener(`keydown`, this._handleEnterKeyDown);
 
     render(this._bodyContainer, this._filmDetails, RenderPosition.BEFOREEND);
   }
 
   _handleWatchlistClick() {
     this._changeData(
-        UPDATE_FILM, UpdateType.MINOR,
+        UserAction.UPDATE_FILM, UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
@@ -109,7 +119,7 @@ export default class Film {
 
   _handleFavoriteClick() {
     this._changeData(
-        UPDATE_FILM, UpdateType.MINOR,
+        UserAction.UPDATE_FILM, UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
@@ -122,7 +132,7 @@ export default class Film {
 
   _handleHistoryClick() {
     this._changeData(
-        UPDATE_FILM, UpdateType.MINOR,
+        UserAction.UPDATE_FILM, UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
@@ -131,5 +141,53 @@ export default class Film {
             }
         )
     );
+  }
+
+  _handleDeleteCommentButtonClick(commentId) {
+    const newComments = this._film.comments.filter((comment) => comment.id !== parseInt(commentId, 10));
+
+    this._changeData(
+        UserAction.DELETE_COMMENT,
+        UpdateType.MINOR,
+        Object.assign(
+            {},
+            this._film,
+            {
+              comments: newComments
+            }
+        )
+    );
+  }
+
+  _handleEnterKeyDown(evt) {
+    if ((evt.ctrlKey || evt.metaKey) && evt.key === ENTER_KEY) {
+      const userComment = this._filmDetails.getUserComment();
+      const selectedEmojiType = this._filmDetails.getSelectedEmojiType();
+
+      if (userComment && selectedEmojiType) {
+        const newComment = {
+          id: generateId(),
+          emoji: EmojiType[selectedEmojiType.toUpperCase()],
+          text: userComment,
+          author: `Anonim`,
+          time: new Date(),
+        };
+
+        const newComments = this._film.comments.slice();
+        newComments.push(newComment);
+
+        this._changeData(
+            UserAction.ADD_COMMENT,
+            UpdateType.MINOR,
+            Object.assign(
+                {},
+                this._film,
+                {
+                  comments: newComments
+                }
+            )
+        );
+      }
+    }
   }
 }

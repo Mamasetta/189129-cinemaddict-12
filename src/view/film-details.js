@@ -1,6 +1,7 @@
 import SmartView from './smart.js';
 import {formatRuntime, formatDate} from '../utils/film.js';
 import {EMOJIES, EmojiType, FormatKey} from '../constants.js';
+import he from 'he';
 
 const choosingEmoji = (emoji) => {
   let variable = null;
@@ -37,11 +38,11 @@ const createCommentTemplate = (comment) => {
         <img src="./images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji-smile">
       </span>
       <div>
-        <p class="film-details__comment-text">${comment.description}</p>
+        <p class="film-details__comment-text">${he.encode(comment.description)}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${comment.author}</span>
           <span class="film-details__comment-day">${commentDateView}</span>
-          <button class="film-details__comment-delete">Delete</button>
+          <button class="film-details__comment-delete" data-comment-id ="${comment.id}">Delete</button>
         </p>
       </div>
     </li>`
@@ -181,19 +182,22 @@ export default class FilmDetails extends SmartView {
     super();
     this._filmData = filmData;
     this._emoji = null;
+    this._comment = null;
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._historyClickHandler = this._historyClickHandler.bind(this);
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
+    this._commentInputHandler = this._commentInputHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._filmData, this._emoji);
+    return createFilmDetailsTemplate(this._filmData, this._emoji, this._comment);
   }
 
   setInnerHandlers() {
-    this.setEmojiClickHandler(this._callback.emojiClick);
+    this.setEmojiClickHandler();
+    this.setCommentInputHandler();
     this.setCloseButtonClickHandler(this._callback.closeButtonClick);
   }
 
@@ -202,12 +206,16 @@ export default class FilmDetails extends SmartView {
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setHistoryClickHandler(this._callback.historyClick);
+    this.setDeleteCommentButtonClickHandler(this._callback.deleteCommentButtonClick);
     this.setInnerHandlers();
   }
 
   setCloseButtonClickHandler(callback) {
     this._callback.closeButtonClick = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closeButtonClickHandler);
+  }
+  setEnterKeyDown(callback) {
+    this._callback.enterKeyDown = callback;
   }
 
   setWatchlistClickHandler(callback) {
@@ -227,6 +235,17 @@ export default class FilmDetails extends SmartView {
 
   setEmojiClickHandler() {
     this.getElement().querySelectorAll(`.film-details__emoji-label`).forEach((element) => element.addEventListener(`click`, this._emojiClickHandler));
+  }
+
+  setCommentInputHandler() {
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`input`, this._commentInputHandler);
+  }
+
+  setDeleteCommentButtonClickHandler(callback) {
+    this._callback.deleteCommentButtonClick = callback;
+    this.getElement()
+      .querySelectorAll(`.film-details__comment-delete`)
+      .forEach((element) => element.addEventListener(`click`, this._deleteCommentButtonClickHandler));
   }
 
   _closeButtonClickHandler(evt) {
@@ -257,5 +276,23 @@ export default class FilmDetails extends SmartView {
 
   _updateEmoji(emoji) {
     this._emoji = choosingEmoji(emoji);
+  }
+
+  _commentInputHandler(evt) {
+    evt.preventDefault();
+    this._comment = evt.target.value;
+  }
+
+  _deleteCommentButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteCommentButtonClick(evt.target.dataset.commentId);
+  }
+
+  getSelectedEmojiType() {
+    return this._emoji ? this._emoji : false;
+  }
+
+  getUserComment() {
+    return this._comment ? this._comment : false;
   }
 }

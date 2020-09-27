@@ -1,4 +1,4 @@
-import {UPDATE_FILM, ExtraSectionTitle, FilmCardsShowCount, SortingType, UpdateType} from '../constants.js';
+import {UserAction, ExtraSectionTitle, FilmCardsShowCount, SortingType, UpdateType} from '../constants.js';
 import {getSortedFilmsByRating, getSortedFilmsByComments, sortingByDate, sortingByRating} from '../utils/film.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
 
@@ -11,9 +11,13 @@ import FilmsExtraContainerView from '../view/films-extra-container.js';
 
 import FilmPresenter from './film.js';
 
+import {filtersData} from '../utils/filter.js';
+
 export default class MovieList {
-  constructor(bodyContainer, mainContainer, moviesModel) {
+  constructor(bodyContainer, mainContainer, moviesModel, filtersModel) {
     this._moviesModel = moviesModel;
+    this._filtersModel = filtersModel;
+
     this._bodyContainer = bodyContainer;
     this._mainContainer = mainContainer;
 
@@ -27,6 +31,9 @@ export default class MovieList {
 
     this._showingFilmsCount = FilmCardsShowCount.ON_START;
     this._currentSortingType = SortingType.DEFAULT;
+    this._moviesModel.addObserver(this._handleModelEvent);
+    this._filtersModel.addObserver(this._handleModelEvent);
+
     this._filmPresenter = {};
     this._mostRatedFilmPresenter = {};
     this._mostCommentedFilmPresenter = {};
@@ -66,14 +73,18 @@ export default class MovieList {
   }
 
   _getFilms() {
+    const filterType = this._filtersModel.getFilter();
+    const films = this._moviesModel.getFilms();
+    const filteredFilms = filtersData[filterType](films);
+
     switch (this._currentSortingType) {
       case SortingType.DATE:
-        return this._moviesModel.getFilms().slice().sort(sortingByDate);
+        return filteredFilms.sort(sortingByDate);
       case SortingType.RATING:
-        return this._moviesModel.getFilms().slice().sort(sortingByRating);
+        return filteredFilms.sort(sortingByRating);
     }
 
-    return this._moviesModel.getFilms();
+    return filteredFilms;
   }
 
   _handleSortingTypeChange(sortingType) {
@@ -89,14 +100,6 @@ export default class MovieList {
   _renderSorting() {
     render(this._mainContainer, this._sortingComponent, RenderPosition.BEFOREEND);
     this._sortingComponent.setSortingTypeChangeHandler(this._handleSortingTypeChange);
-  }
-
-  _clearFilms() {
-    Object
-      .values(this._filmPresenter)
-      .forEach((presenter) => presenter.destroy());
-    this._filmPresenter = {};
-    this._showingFilmsCount = FilmCardsShowCount.ON_START;
   }
 
   _renderFilms() {
@@ -174,7 +177,7 @@ export default class MovieList {
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
-      case UPDATE_FILM:
+      case UserAction.UPDATE_FILM:
         this._moviesModel.updateFilm(updateType, update);
         break;
     }
@@ -186,8 +189,9 @@ export default class MovieList {
         this._handleFilmChange(updatedFilm);
         break;
       case UpdateType.MAJOR:
-        this._clearFilmsList({resetRenderedTaskCount: true, resetSortType: true});
+        this._clearFilmsList({resetRenderedFilmsCount: true, resetSortingType: true});
         this._renderFilmsList();
+        break;
     }
   }
 
@@ -199,6 +203,8 @@ export default class MovieList {
     ].forEach((presenter) => presenter.destroy());
 
     this._filmPresenter = {};
+    this._mostCommentedFilmPresenter = {};
+    this._mostRatedFilmPresenter = {};
 
     remove(this._sortingComponent);
     remove(this._showMoreButtonComponent);
