@@ -8,6 +8,7 @@ import FooterStatisticsView from './view/footer-statistics.js';
 
 import MovieListPresenter from './presenter/movie-list.js';
 import FilterPresenter from './presenter/filter.js';
+import StatisticsPresenter from './presenter/statistics.js';
 
 import MoviesModel from './model/movies.js';
 import FiltersModel from './model/filters.js';
@@ -28,11 +29,10 @@ const filterModel = new FiltersModel();
 
 render(headerElement, new ProfileRatingView(), RenderPosition.BEFOREEND);
 
-new MovieListPresenter(bodyElement, mainElement, moviesModel, filterModel).init();
-
-const filterPresenter = new FilterPresenter(mainElement, filterModel, moviesModel);
-filterPresenter.init();
+const statisticsPresenter = new StatisticsPresenter(mainElement, moviesModel);
+const movieListPresenter = new MovieListPresenter(bodyElement, mainElement, moviesModel, filterModel);
+movieListPresenter.init();
+new FilterPresenter(mainElement, filterModel, moviesModel, statisticsPresenter, movieListPresenter).init();
 
 render(footerStatisticsElement, new FooterStatisticsView(films.length), RenderPosition.BEFOREEND);
-
 

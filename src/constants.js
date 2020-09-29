@@ -139,6 +139,14 @@ const FilterType = {
   FAVORITES: `favorites`
 };
 
+const StatisticsFilter = {
+  ALL_TIME: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`
+};
+
 export {
   RATING_MAX,
   EXTRA_COUNT,
@@ -163,5 +171,6 @@ export {
   FormatKey,
   UpdateType,
   UserAction,
-  FilterType
+  FilterType,
+  StatisticsFilter
 };

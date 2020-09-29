@@ -50,6 +50,22 @@ export default class MovieList {
     this._renderFilmsList();
   }
 
+  hideFilmsSection() {
+    this._filmsSectionComponent.getElement().classList.add(`visually-hidden`);
+    this._sortingComponent.getElement().classList.add(`visually-hidden`);
+  }
+
+  showFilmsSection() {
+    this._filmsSectionComponent.getElement().classList.remove(`visually-hidden`);
+    this._sortingComponent.getElement().classList.remove(`visually-hidden`);
+    this._handleSortingTypeChange(SortingType.DEFAULT);
+  }
+
+  resetFilmsSection() {
+    this._clearFilmsList({resetRenderedFilmsCount: true});
+    this._renderFilmsList();
+  }
+
   _renderFilmsList() {
     this._renderSorting();
     render(this._mainContainer, this._filmsSectionComponent, RenderPosition.BEFOREEND);

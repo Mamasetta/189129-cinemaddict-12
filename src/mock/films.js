@@ -56,5 +56,6 @@ export const generateFilmData = () => ({
   ageRating: getRandomInteger(CommonValue.MIN, CommonValue.MAX),
   isInWatchlist: getRandomBoolean(),
   isFavorite: getRandomBoolean(),
-  isHistory: getRandomBoolean()
+  isHistory: getRandomBoolean(),
+  watchingDay: getReleaseDate()
 });
