@@ -1,4 +1,4 @@
-import {UserAction, ExtraSectionTitle, FilmCardsShowCount, SortingType, UpdateType} from '../constants.js';
+import {UPDATE_FILM, ExtraSectionTitle, FilmCardsShowCount, SortingType, UpdateType} from '../constants.js';
 import {getSortedFilmsByRating, getSortedFilmsByComments, sortingByDate, sortingByRating} from '../utils/film.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
 
@@ -178,14 +178,9 @@ export default class MovieList {
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
-      case UserAction.UPDATE_FILM:
+      case UPDATE_FILM:
         this._moviesModel.updateFilm(updateType, update);
         break;
-      case UserAction.DELETE_COMMENT:
-        this._moviesModel.updateFilm(updateType, update);
-        break;
-      case UserAction.ADD_COMMENT:
-        this._moviesModel.updateFilm(updateType, update);
     }
   }
 

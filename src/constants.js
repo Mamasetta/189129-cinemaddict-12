@@ -4,6 +4,7 @@ const FILMS_COUNT = 20;
 const FILMS_DATA_MIN = 1;
 const COMMENTS_SENTENCE_COUNT = 3;
 const RUNTIME_MAX = 180;
+const UPDATE_FILM = `UPDATE_FILM`;
 
 const IMAGES = [
   `made-for-each-other.png`,
@@ -146,6 +147,7 @@ export {
   FILMS_DATA_MIN,
   COMMENTS_SENTENCE_COUNT,
   RUNTIME_MAX,
+  UPDATE_FILM,
   IMAGES,
   TITLES,
   NAMES,
@@ -162,6 +164,5 @@ export {
   SortingType,
   FormatKey,
   UpdateType,
-  UserAction,
   FilterType
 };
