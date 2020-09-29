@@ -168,9 +168,9 @@ export default class Film {
         const newComment = {
           id: generateId(),
           emoji: EmojiType[selectedEmojiType.toUpperCase()],
-          text: userComment,
+          date: new Date(),
           author: `Anonim`,
-          time: new Date(),
+          description: userComment
         };
 
         const newComments = this._film.comments.slice();

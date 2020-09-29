@@ -189,6 +189,7 @@ export default class FilmDetails extends SmartView {
     this._historyClickHandler = this._historyClickHandler.bind(this);
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
+    this._deleteCommentButtonClickHandler = this._deleteCommentButtonClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -246,6 +247,14 @@ export default class FilmDetails extends SmartView {
     this.getElement().querySelectorAll(`.film-details__comment-delete`).forEach((element) => element.addEventListener(`click`, this._deleteCommentButtonClickHandler));
   }
 
+  getSelectedEmojiType() {
+    return this._emoji ? this._emoji : false;
+  }
+
+  getUserComment() {
+    return this._comment ? this._comment : false;
+  }
+
   _closeButtonClickHandler(evt) {
     evt.preventDefault();
     this.getElement().remove();
@@ -284,13 +293,5 @@ export default class FilmDetails extends SmartView {
   _deleteCommentButtonClickHandler(evt) {
     evt.preventDefault();
     this._callback.deleteCommentButtonClick(evt.target.dataset.commentId);
-  }
-
-  getSelectedEmojiType() {
-    return this._emoji ? this._emoji : false;
-  }
-
-  getUserComment() {
-    return this._comment ? this._comment : false;
   }
 }
