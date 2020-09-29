@@ -20,12 +20,12 @@ export default class Statistics {
     this._statisticsChangeHandler = this._statisticsChangeHandler.bind(this);
   }
   init() {
-    this._statisticsComponent = new StatisticsView(this._getStatisticsDataFilms(this._moviesModel.getFilms(), this._statisticsFilter));
+    this._statisticsComponent = new StatisticsView(this._getStatisticsDataFilms(this._moviesModel.get(), this._statisticsFilter));
     render(this._container, this._statisticsComponent, RenderPosition.BEFOREEND);
     this._statisticsComponent.setStatisticsChangeHandler(this._statisticsChangeHandler);
   }
 
-  removeStatisticsComponent() {
+  remove() {
     remove(this._statisticsComponent);
   }
 
@@ -36,7 +36,7 @@ export default class Statistics {
   }
 
   _renderStatistics() {
-    this._statisticsComponent = new StatisticsView(this._getStatisticsDataFilms(this._moviesModel.getFilms(), this._statisticsFilter));
+    this._statisticsComponent = new StatisticsView(this._getStatisticsDataFilms(this._moviesModel.get(), this._statisticsFilter));
     render(this._container, this._statisticsComponent, RenderPosition.BEFOREEND);
     this._statisticsComponent.setStatisticsChangeHandler(this._statisticsChangeHandler);
   }

@@ -30,7 +30,7 @@ export default class Filter {
   }
 
   init() {
-    this._currentFilter = this._filterModel.getFilter();
+    this._currentFilter = this._filterModel.get();
 
     const filters = this._getFilters();
     const prevFilterElement = this._filterElement;
@@ -55,17 +55,17 @@ export default class Filter {
   _handleFilterTypeChange(filterType) {
     if (this._statisticsMode === StatisticsMode.OPEN) {
       this._statisticsMode = StatisticsMode.DEFAULT;
-      this._statisticsPresenter.removeStatisticsComponent();
-      this._movieListPresenter.showFilmsSection();
+      this._statisticsPresenter.remove();
+      this._movieListPresenter.show();
       this._filterElement.getElement()
         .querySelector(`.main-navigation__additional`).classList.remove(`main-navigation__item--active`);
     }
 
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+    this._filterModel.set(UpdateType.MAJOR, filterType);
   }
 
   _getFilters() {
-    const films = this._moviesModel.getFilms();
+    const films = this._moviesModel.get();
 
     return [
       {
@@ -90,12 +90,12 @@ export default class Filter {
     if (this._statisticsMode === StatisticsMode.DEFAULT) {
       this._statisticsMode = StatisticsMode.OPEN;
       this._statisticsPresenter.init();
-      this._movieListPresenter.hideFilmsSection();
+      this._movieListPresenter.hide();
     } else {
       this._statisticsMode = StatisticsMode.DEFAULT;
-      this._statisticsPresenter.removeStatisticsComponent();
-      this._movieListPresenter.showFilmsSection();
-      this._movieListPresenter.resetFilmsSection();
+      this._statisticsPresenter.remove();
+      this._movieListPresenter.show();
+      this._movieListPresenter.reset();
     }
   }
 }

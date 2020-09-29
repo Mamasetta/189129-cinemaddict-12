@@ -127,12 +127,6 @@ const UpdateType = {
   MAJOR: `MAJOR`
 };
 
-const UserAction = {
-  UPDATE_FILM: `UPDATE_FILM`,
-  DELETE_COMMENT: `DELETE`,
-  ADD_COMMENT: `ADD_COMMENT`
-};
-
 const FilterType = {
   ALL_MOVIES: `all movies`,
   WATCHLIST: `watchlist`,

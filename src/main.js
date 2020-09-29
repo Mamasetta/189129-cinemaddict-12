@@ -23,7 +23,7 @@ const footerStatisticsElement = bodyElement.querySelector(`.footer__statistics`)
 const films = getNewArray(FILMS_COUNT, generateFilmData);
 
 const moviesModel = new MoviesModel();
-moviesModel.setFilms(films);
+moviesModel.set(films);
 
 const filterModel = new FiltersModel();
 

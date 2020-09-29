@@ -50,18 +50,18 @@ export default class MovieList {
     this._renderFilmsList();
   }
 
-  hideFilmsSection() {
+  hide() {
     this._filmsSectionComponent.getElement().classList.add(`visually-hidden`);
     this._sortingComponent.getElement().classList.add(`visually-hidden`);
   }
 
-  showFilmsSection() {
+  show() {
     this._filmsSectionComponent.getElement().classList.remove(`visually-hidden`);
     this._sortingComponent.getElement().classList.remove(`visually-hidden`);
     this._handleSortingTypeChange(SortingType.DEFAULT);
   }
 
-  resetFilmsSection() {
+  reset() {
     this._clearFilmsList({resetRenderedFilmsCount: true});
     this._renderFilmsList();
   }
@@ -90,8 +90,8 @@ export default class MovieList {
   }
 
   _getFilms() {
-    const filterType = this._filtersModel.getFilter();
-    const films = this._moviesModel.getFilms();
+    const filterType = this._filtersModel.get();
+    const films = this._moviesModel.get();
     const filteredFilms = filtersData[filterType](films);
 
     switch (this._currentSortingType) {
@@ -195,7 +195,7 @@ export default class MovieList {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UPDATE_FILM:
-        this._moviesModel.updateFilm(updateType, update);
+        this._moviesModel.update(updateType, update);
         break;
     }
   }
