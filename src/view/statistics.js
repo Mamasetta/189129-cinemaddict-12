@@ -66,7 +66,7 @@ const renderChart = (statisticsCtx, genres, counts) => {
 };
 
 
-const getDurationForStatistics = (minutes) => {
+const createDurationStatisticsTemplate = (minutes) => {
   let hour = 0;
   let minute = 0;
 
@@ -80,7 +80,7 @@ const getDurationForStatistics = (minutes) => {
   return `${hour}<span class="statistic__item-description">h</span> ${minute}<span class="statistic__item-description">m</span>`;
 };
 
-const createStatisticsTemplate = ({watchedCount, totalDuration, topGenre}) =>
+const createStatisticsTemplate = ({watchedCount, totalDuration, topGenre}, filter, currentStatistics) =>
   `<section class="statistic">
     <p class="statistic__rank">
       Your rank
@@ -89,16 +89,16 @@ const createStatisticsTemplate = ({watchedCount, totalDuration, topGenre}) =>
     </p>
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
       <p class="statistic__filters-description">Show stats:</p>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" checked>
-      <label for="statistic-all-time" class="statistic__filters-label">All time</label>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today">
-      <label for="statistic-today" class="statistic__filters-label">Today</label>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week">
-      <label for="statistic-week" class="statistic__filters-label">Week</label>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month">
-      <label for="statistic-month" class="statistic__filters-label">Month</label>
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year">
-      <label for="statistic-year" class="statistic__filters-label">Year</label>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${filter.ALL_TIME}" value="${filter.ALL_TIME}" ${currentStatistics === filter.ALL_TIME ? `checked` : ``}>
+      <label for="statistic-${filter.ALL_TIME}" class="statistic__filters-label">All time</label>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${filter.TODAY}" value="${filter.TODAY}" ${currentStatistics === filter.TODAY ? `checked` : ``}>
+      <label for="statistic-${filter.TODAY}" class="statistic__filters-label">Today</label>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${filter.WEEK}" value="${filter.WEEK}" ${currentStatistics === filter.WEEK ? `checked` : ``}>
+      <label for="statistic-${filter.WEEK}" class="statistic__filters-label">Week</label>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${filter.MONTH}" value="${filter.MONTH}" ${currentStatistics === filter.MONTH ? `checked` : ``}>
+      <label for="statistic-${filter.MONTH}" class="statistic__filters-label">Month</label>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-${filter.YEAR}" value="${filter.YEAR}" ${currentStatistics === filter.YEAR ? `checked` : ``}>
+      <label for="statistic-${filter.YEAR}" class="statistic__filters-label">Year</label>
     </form>
     <ul class="statistic__text-list">
       <li class="statistic__text-item">
@@ -107,7 +107,7 @@ const createStatisticsTemplate = ({watchedCount, totalDuration, topGenre}) =>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">${getDurationForStatistics(totalDuration)}</p>
+        <p class="statistic__item-text">${createDurationStatisticsTemplate(totalDuration)}</p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
@@ -120,15 +120,17 @@ const createStatisticsTemplate = ({watchedCount, totalDuration, topGenre}) =>
   </section>`;
 
 export default class Statistics extends SmartView {
-  constructor(statisticsData) {
+  constructor(statisticsData, statisticsFilter, currentStatisticsType) {
     super();
     this._statisticsData = statisticsData;
+    this._statisticsFilter = statisticsFilter;
+    this._currentStatisticsType = currentStatisticsType;
     this._statisticsChangeHandler = this._statisticsChangeHandler.bind(this);
     this._setChart();
   }
 
   getTemplate() {
-    return createStatisticsTemplate(this._statisticsData);
+    return createStatisticsTemplate(this._statisticsData, this._statisticsFilter, this._currentStatisticsType);
   }
 
   setStatisticsChangeHandler(callback) {
@@ -150,7 +152,7 @@ export default class Statistics extends SmartView {
       const countLine = genres.length;
       const statisticsCtx = this.getElement().querySelector(`.statistic__chart`);
       statisticsCtx.height = BAR_HEIGHT * countLine;
-      this._chart = renderChart(statisticsCtx, genres, counts);
+      renderChart(statisticsCtx, genres, counts);
     }
   }
 }
