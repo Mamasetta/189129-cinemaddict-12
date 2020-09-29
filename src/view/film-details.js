@@ -1,6 +1,28 @@
 import SmartView from './smart.js';
-import {formatRuntime, formatDate, choosingEmoji} from '../utils/film.js';
-import {EMOJIES, FormatKey} from '../constants.js';
+import {formatRuntime, formatDate} from '../utils/film.js';
+import {EMOJIES, EmojiType, FormatKey} from '../constants.js';
+import he from 'he';
+
+const choosingEmoji = (emoji) => {
+  let variable = null;
+
+  switch (emoji) {
+    case EmojiType.SMILE:
+      variable = EmojiType.SMILE;
+      break;
+    case EmojiType.ANGRY:
+      variable = EmojiType.ANGRY;
+      break;
+    case EmojiType.SLEEPING:
+      variable = EmojiType.SLEEPING;
+      break;
+    case EmojiType.PUKE:
+      variable = EmojiType.PUKE;
+      break;
+  }
+
+  return variable;
+};
 
 const getCheckedAttribute = (control) => control ? `checked` : ``;
 
@@ -16,11 +38,11 @@ const createCommentTemplate = (comment) => {
         <img src="./images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji-smile">
       </span>
       <div>
-        <p class="film-details__comment-text">${comment.description}</p>
+        <p class="film-details__comment-text">${he.encode(comment.description)}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${comment.author}</span>
           <span class="film-details__comment-day">${commentDateView}</span>
-          <button class="film-details__comment-delete">Delete</button>
+          <button class="film-details__comment-delete" data-comment-id ="${comment.id}">Delete</button>
         </p>
       </div>
     </li>`
@@ -44,7 +66,7 @@ const createChoosingEmojiTemplate = (emojies) => {
     }).join(`\n`);
 };
 
-const createFilmDetailsTemplate = (filmData, emoji) => {
+const createFilmDetailsTemplate = (filmData) => {
   const {image, title, rating, director, writers, cast, releaseDate, runtime, country, genres, description, comments, ageRating, isInWatchlist, isFavorite, isHistory} = filmData;
 
   const releaseDateVeiw = formatDate(releaseDate, FormatKey.DETAILS);
@@ -138,9 +160,7 @@ const createFilmDetailsTemplate = (filmData, emoji) => {
             </ul>
 
             <div class="film-details__new-comment">
-              <div for="add-emoji" class="film-details__add-emoji-label">
-                ${emoji ? getSelectedEmoji(emoji) : ``}
-              </div>
+              <div for="add-emoji" class="film-details__add-emoji-label"></div>
 
               <label class="film-details__comment-label">
                 <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
@@ -162,19 +182,23 @@ export default class FilmDetails extends SmartView {
     super();
     this._filmData = filmData;
     this._emoji = null;
+    this._comment = null;
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._historyClickHandler = this._historyClickHandler.bind(this);
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
+    this._commentInputHandler = this._commentInputHandler.bind(this);
+    this._deleteCommentButtonClickHandler = this._deleteCommentButtonClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._filmData, this._emoji);
+    return createFilmDetailsTemplate(this._filmData, this._emoji, this._comment);
   }
 
   setInnerHandlers() {
-    this.setEmojiClickHandler(this._callback.emojiClick);
+    this.setEmojiClickHandler();
+    this.setCommentInputHandler();
     this.setCloseButtonClickHandler(this._callback.closeButtonClick);
   }
 
@@ -183,12 +207,16 @@ export default class FilmDetails extends SmartView {
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setHistoryClickHandler(this._callback.historyClick);
+    this.setDeleteCommentButtonClickHandler(this._callback.deleteCommentButtonClick);
     this.setInnerHandlers();
   }
 
   setCloseButtonClickHandler(callback) {
     this._callback.closeButtonClick = callback;
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closeButtonClickHandler);
+  }
+  setEnterKeyDown(callback) {
+    this._callback.enterKeyDown = callback;
   }
 
   setWatchlistClickHandler(callback) {
@@ -208,6 +236,23 @@ export default class FilmDetails extends SmartView {
 
   setEmojiClickHandler() {
     this.getElement().querySelectorAll(`.film-details__emoji-label`).forEach((element) => element.addEventListener(`click`, this._emojiClickHandler));
+  }
+
+  setCommentInputHandler() {
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`input`, this._commentInputHandler);
+  }
+
+  setDeleteCommentButtonClickHandler(callback) {
+    this._callback.deleteCommentButtonClick = callback;
+    this.getElement().querySelectorAll(`.film-details__comment-delete`).forEach((element) => element.addEventListener(`click`, this._deleteCommentButtonClickHandler));
+  }
+
+  getSelectedEmojiType() {
+    return this._emoji ? this._emoji : false;
+  }
+
+  getUserComment() {
+    return this._comment ? this._comment : false;
   }
 
   _closeButtonClickHandler(evt) {
@@ -233,10 +278,20 @@ export default class FilmDetails extends SmartView {
   _emojiClickHandler(evt) {
     evt.preventDefault();
     this._updateEmoji(evt.target.dataset.emojiType);
-    this.updateElement();
+    this.getElement().querySelector(`.film-details__add-emoji-label`).innerHTML = getSelectedEmoji(evt.target.dataset.emojiType);
   }
 
   _updateEmoji(emoji) {
     this._emoji = choosingEmoji(emoji);
+  }
+
+  _commentInputHandler(evt) {
+    evt.preventDefault();
+    this._comment = evt.target.value;
+  }
+
+  _deleteCommentButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteCommentButtonClick(evt.target.dataset.commentId);
   }
 }

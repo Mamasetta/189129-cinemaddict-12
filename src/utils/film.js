@@ -1,4 +1,4 @@
-import {EXTRA_COUNT, EmojiType, FormatKey} from '../constants.js';
+import {EXTRA_COUNT, FormatKey} from '../constants.js';
 import moment from 'moment';
 
 const formatRuntime = (minutes) => {
@@ -36,33 +36,11 @@ const sortingByDate = (firstFilm, secondFilm) => secondFilm.releaseDate.getTime(
 
 const sortingByRating = (firstFilm, secondFilm) => secondFilm.rating - firstFilm.rating;
 
-const choosingEmoji = (emoji) => {
-  let variable = null;
-
-  switch (emoji) {
-    case EmojiType.SMILE:
-      variable = EmojiType.SMILE;
-      break;
-    case EmojiType.ANGRY:
-      variable = EmojiType.ANGRY;
-      break;
-    case EmojiType.SLEEPING:
-      variable = EmojiType.SLEEPING;
-      break;
-    case EmojiType.PUKE:
-      variable = EmojiType.PUKE;
-      break;
-  }
-
-  return variable;
-};
-
 export {
   formatRuntime,
   formatDate,
   getSortedFilmsByRating,
   getSortedFilmsByComments,
   sortingByDate,
-  sortingByRating,
-  choosingEmoji
+  sortingByRating
 };
