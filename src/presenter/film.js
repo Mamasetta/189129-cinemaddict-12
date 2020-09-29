@@ -3,7 +3,7 @@ import FilmDetailsView from '../view/film-details.js';
 
 import {RenderPosition, render, replace, remove} from '../utils/render.js';
 import {generateId} from '../mock/films.js';
-import {UserAction, UpdateType} from "../constants.js";
+import {UPDATE_FILM, UpdateType} from "../constants.js";
 import {EmojiType} from '../constants.js';
 
 const ENTER_KEY = `Enter`;
@@ -106,7 +106,7 @@ export default class Film {
 
   _handleWatchlistClick() {
     this._changeData(
-        UserAction.UPDATE_FILM, UpdateType.MINOR,
+        UPDATE_FILM, UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
@@ -119,7 +119,7 @@ export default class Film {
 
   _handleFavoriteClick() {
     this._changeData(
-        UserAction.UPDATE_FILM, UpdateType.MINOR,
+        UPDATE_FILM, UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
@@ -132,7 +132,7 @@ export default class Film {
 
   _handleHistoryClick() {
     this._changeData(
-        UserAction.UPDATE_FILM, UpdateType.MINOR,
+        UPDATE_FILM, UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
@@ -147,7 +147,7 @@ export default class Film {
     const newComments = this._film.comments.filter((comment) => comment.id !== parseInt(commentId, 10));
 
     this._changeData(
-        UserAction.DELETE_COMMENT,
+        UPDATE_FILM,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -168,16 +168,16 @@ export default class Film {
         const newComment = {
           id: generateId(),
           emoji: EmojiType[selectedEmojiType.toUpperCase()],
-          text: userComment,
+          date: new Date(),
           author: `Anonim`,
-          time: new Date(),
+          description: userComment
         };
 
         const newComments = this._film.comments.slice();
         newComments.push(newComment);
 
         this._changeData(
-            UserAction.ADD_COMMENT,
+            UPDATE_FILM,
             UpdateType.MINOR,
             Object.assign(
                 {},
