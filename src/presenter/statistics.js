@@ -17,19 +17,19 @@ export default class Statistics {
     this._statisticsComponent = null;
     this._moviesModel = moviesModel;
     this._statisticsFilter = StatisticsFilter.ALL_TIME;
-    this._statisticsInputHandler = this._statisticsInputHandler.bind(this);
+    this._statisticsChangeHandler = this._statisticsChangeHandler.bind(this);
   }
   init() {
     this._statisticsComponent = new StatisticsView(this._getStatisticsDataFilms(this._moviesModel.getFilms(), this._statisticsFilter));
     render(this._container, this._statisticsComponent, RenderPosition.BEFOREEND);
-    this._statisticsComponent.setStatisticsInputHandler(this._statisticsInputHandler);
+    this._statisticsComponent.setStatisticsChangeHandler(this._statisticsChangeHandler);
   }
 
   removeStatisticsComponent() {
     remove(this._statisticsComponent);
   }
 
-  _statisticsInputHandler(statisticsValue) {
+  _statisticsChangeHandler(statisticsValue) {
     remove(this._statisticsComponent);
     this._statisticsFilter = statisticsValue;
     this._renderStatistics();
@@ -38,7 +38,7 @@ export default class Statistics {
   _renderStatistics() {
     this._statisticsComponent = new StatisticsView(this._getStatisticsDataFilms(this._moviesModel.getFilms(), this._statisticsFilter));
     render(this._container, this._statisticsComponent, RenderPosition.BEFOREEND);
-    this._statisticsComponent.setStatisticsInputHandler(this._statisticsInputHandler);
+    this._statisticsComponent.setStatisticsChangeHandler(this._statisticsChangeHandler);
   }
 
   _getStatisticsDataFilms(films, statisticsFilter) {

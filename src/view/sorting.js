@@ -19,7 +19,7 @@ export default class Sorting extends AbstractView {
 
   setSortingTypeChangeHandler(callback) {
     this._callback.sortingTypeChangeHandler = callback;
-    this.getElement().addEventListener(`click`, this._sortingTypeChangeHandler);
+    this.getElement().querySelectorAll(`.sort__button`).forEach((element) => element.addEventListener(`click`, this._sortingTypeChangeHandler));
   }
 
   _sortingTypeChangeHandler(evt) {

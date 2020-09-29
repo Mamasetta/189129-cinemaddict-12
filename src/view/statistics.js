@@ -123,7 +123,7 @@ export default class Statistics extends SmartView {
   constructor(statisticsData) {
     super();
     this._statisticsData = statisticsData;
-    this._statisticsInputHandler = this._statisticsInputHandler.bind(this);
+    this._statisticsChangeHandler = this._statisticsChangeHandler.bind(this);
     this._setChart();
   }
 
@@ -131,16 +131,16 @@ export default class Statistics extends SmartView {
     return createStatisticsTemplate(this._statisticsData);
   }
 
-  setStatisticsInputHandler(callback) {
-    this._callback._statisticsInput = callback;
+  setStatisticsChangeHandler(callback) {
+    this._callback._statisticsChange = callback;
     this.getElement()
       .querySelectorAll(`.statistic__filters-input`)
-      .forEach((element) => element.addEventListener(`input`, this._statisticsInputHandler));
+      .forEach((element) => element.addEventListener(`input`, this._statisticsChangeHandler));
   }
 
-  _statisticsInputHandler(evt) {
+  _statisticsChangeHandler(evt) {
     evt.preventDefault();
-    this._callback._statisticsInput(evt.target.value);
+    this._callback._statisticsChange(evt.target.value);
   }
 
   _setChart() {
