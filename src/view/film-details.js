@@ -29,20 +29,20 @@ const getCheckedAttribute = (control) => control ? `checked` : ``;
 const createGenreTemplate = (genre) =>
   `<span class="film-details__genre">${genre}</span>`;
 
-const createCommentTemplate = (comment) => {
-  const commentDateView = formatDate(comment.date, FormatKey.COMMENT);
+const createCommentTemplate = ({id, emotion, comment, author, date}) => {
+  const commentDateView = formatDate(date, FormatKey.COMMENT);
 
   return (
-    `<li class="film-details__comment">
+    `<li class="film-details__comment" data-comment-id="${id}">
       <span class="film-details__comment-emoji">
-        <img src="./images/emoji/${comment.emoji}.png" width="55" height="55" alt="emoji-smile">
+        <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
       </span>
       <div>
-        <p class="film-details__comment-text">${he.encode(comment.description)}</p>
+        <p class="film-details__comment-text">${he.encode(comment)}</p>
         <p class="film-details__comment-info">
-          <span class="film-details__comment-author">${comment.author}</span>
+          <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${commentDateView}</span>
-          <button class="film-details__comment-delete" data-comment-id ="${comment.id}">Delete</button>
+          <button class="film-details__comment-delete" data-comment-id ="${id}">Delete</button>
         </p>
       </div>
     </li>`
@@ -66,25 +66,25 @@ const createChoosingEmojiTemplate = (emojies) => {
     }).join(`\n`);
 };
 
-const createFilmDetailsTemplate = (filmData) => {
-  const {image, title, rating, director, writers, cast, releaseDate, runtime, country, genres, description, comments, ageRating, isInWatchlist, isFavorite, isHistory} = filmData;
+const createFilmDetailsTemplate = (filmData, filmsComments) => {
+  const {id, image, title, fullTitle, rating, director, writers, cast, releaseDate, runtime, country, genres, description, comments, ageRating, isInWatchlist, isFavorite, isHistory} = filmData;
 
   const releaseDateVeiw = formatDate(releaseDate, FormatKey.DETAILS);
   const runtimeView = formatRuntime(runtime);
   const genresTitle = genres.length > 1 ? `Genres` : `Genre`;
   const genresTemplate = genres.map((it) => createGenreTemplate(it)).join(`\n`);
-  const commentsTemplate = comments.map((it) => createCommentTemplate(it)).join(`\n`);
+  const commentsTemplate = filmsComments.map((it) => createCommentTemplate(it)).join(`\n`);
 
   return (
     `<section class="film-details">
-      <form class="film-details__inner" action="" method="get">
+      <form class="film-details__inner" action="" method="get" data-film-id="${id}">
         <div class="form-details__top-container">
           <div class="film-details__close">
             <button class="film-details__close-btn" type="button">close</button>
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="./images/posters/${image}" alt="">
+              <img class="film-details__poster-img" src="./${image}" alt="">
 
               <p class="film-details__age">${ageRating}</p>
             </div>
@@ -93,7 +93,7 @@ const createFilmDetailsTemplate = (filmData) => {
               <div class="film-details__info-head">
                 <div class="film-details__title-wrap">
                   <h3 class="film-details__title">${title}</h3>
-                  <p class="film-details__title-original">Original: ${title}</p>
+                  <p class="film-details__title-original">Original: ${fullTitle}</p>
                 </div>
 
                 <div class="film-details__rating">
@@ -178,11 +178,12 @@ const createFilmDetailsTemplate = (filmData) => {
 };
 
 export default class FilmDetails extends SmartView {
-  constructor(filmData) {
+  constructor(filmData, comments) {
     super();
     this._filmData = filmData;
     this._emoji = null;
     this._comment = null;
+    this._filmsComments = comments;
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
@@ -193,7 +194,7 @@ export default class FilmDetails extends SmartView {
   }
 
   getTemplate() {
-    return createFilmDetailsTemplate(this._filmData, this._emoji, this._comment);
+    return createFilmDetailsTemplate(this._filmData, this._emoji, this._comment, this._filmsComments);
   }
 
   setInnerHandlers() {
@@ -253,6 +254,10 @@ export default class FilmDetails extends SmartView {
 
   getUserComment() {
     return this._comment ? this._comment : false;
+  }
+
+  setFilmComments(comments) {
+    this._filmsComments = comments;
   }
 
   _closeButtonClickHandler(evt) {

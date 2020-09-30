@@ -2,8 +2,8 @@ import FilmCardView from '../view/film-card.js';
 import FilmDetailsView from '../view/film-details.js';
 
 import {RenderPosition, render, replace, remove} from '../utils/render.js';
-import {generateId} from '../mock/films.js';
-import {UPDATE_FILM, UpdateType} from "../constants.js";
+import {generateId} from '../utils/common.js';
+import {UpdateType, UserAction} from "../constants.js";
 import {EmojiType} from '../constants.js';
 
 const ENTER_KEY = `Enter`;
@@ -14,11 +14,13 @@ const Mode = {
 };
 
 export default class Film {
-  constructor(container, bodyContainer, changeData, changeMode) {
+  constructor(container, bodyContainer, changeData, changeMode, api) {
     this._container = container;
     this._bodyContainer = bodyContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._filmComments = null;
+    this._api = api;
 
     this._filmCard = null;
     this._mode = Mode.DEFAULT;
@@ -36,8 +38,13 @@ export default class Film {
     const prevFilmCard = this._filmCard;
     const prevFilmDetails = this._filmDetails;
 
+    this._api.getComments(this._film.id)
+      .then((data) => {
+        this._filmComments = data.slice();
+      });
+
     this._filmCard = new FilmCardView(film);
-    this._filmDetails = new FilmDetailsView(film);
+    this._filmDetails = new FilmDetailsView(film, this._filmComments);
 
     this._filmCard.setFilmClickHandler(() => {
       this._changeMode();
@@ -89,6 +96,7 @@ export default class Film {
   }
 
   _renderFilmDetails() {
+    this._filmDetails.setFilmComments(this._filmComments);
     const onEscKeyDown = (evt) => {
       if (evt.key === `Escape` || evt.key === `Esc`) {
         evt.preventDefault();
@@ -106,7 +114,7 @@ export default class Film {
 
   _handleWatchlistClick() {
     this._changeData(
-        UPDATE_FILM,
+        UserAction.UPDATE_FILM,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -120,7 +128,7 @@ export default class Film {
 
   _handleFavoriteClick() {
     this._changeData(
-        UPDATE_FILM,
+        UserAction.UPDATE_FILM,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -134,7 +142,7 @@ export default class Film {
 
   _handleHistoryClick() {
     this._changeData(
-        UPDATE_FILM,
+        UserAction.UPDATE_FILM,
         UpdateType.MINOR,
         Object.assign(
             {},
@@ -147,16 +155,19 @@ export default class Film {
   }
 
   _handleDeleteCommentButtonClick(commentId) {
-    const newComments = this._film.comments.filter((comment) => comment.id !== parseInt(commentId, 10));
+    const newComments = this._film.comments.filter((comment) => comment.id !== commentId);
 
     this._changeData(
-        UPDATE_FILM,
+        UserAction.DELETE_COMMENT,
         UpdateType.MINOR,
         Object.assign(
             {},
             this._film,
             {
-              comments: newComments
+              comments: newComments.slice()
+            },
+            {
+              deletedCommentId: commentId
             }
         )
     );
@@ -172,21 +183,19 @@ export default class Film {
           id: generateId(),
           emoji: EmojiType[selectedEmojiType.toUpperCase()],
           date: new Date(),
-          author: `Anonim`,
-          description: userComment
+          comment: userComment
         };
 
-        const newComments = this._film.comments.slice();
-        newComments.push(newComment);
+        this._filmComments.push(newComment);
 
         this._changeData(
-            UPDATE_FILM,
+            UserAction.ADD_COMMENT,
             UpdateType.MINOR,
             Object.assign(
                 {},
                 this._film,
                 {
-                  comments: newComments
+                  comments: newComment
                 }
             )
         );

@@ -11,56 +11,6 @@ const MomentSetting = {
   YEAR: `year`
 };
 
-const choosingStatisticsFilter = (statisticsFilter, statisticsData, films) => {
-  let watchedFilms = null;
-  const currentDate = moment();
-  const dateAWeekAgo = moment().subtract(7, MomentSetting.DAYS);
-  const dateAMonthAgo = moment().subtract(1, MomentSetting.MONTH);
-  const dateAYearAgo = moment().subtract(1, MomentSetting.YEAR);
-
-  switch (statisticsFilter) {
-    case StatisticsFilter.ALL_TIME:
-      watchedFilms = filtersData[FilterType.HISTORY](films);
-      statisticsData.watchedCount = watchedFilms.length;
-      watchedFilms = films.filter((film) => film.watchingDate !== null);
-      break;
-    case StatisticsFilter.TODAY:
-      watchedFilms = films.filter((film) => {
-        if (moment(film.watchingDate).isSame(currentDate, MomentSetting.DAY)) {
-          return film;
-        }
-        return false;
-      });
-      break;
-    case StatisticsFilter.WEEK:
-      watchedFilms = films.filter((film) => {
-        if (moment(film.watchingDate).isBetween(dateAWeekAgo, currentDate)) {
-          return film;
-        }
-        return false;
-      });
-      break;
-    case StatisticsFilter.MONTH:
-      watchedFilms = films.filter((film) => {
-        if (moment(film.watchingDate).isBetween(dateAMonthAgo, currentDate)) {
-          return film;
-        }
-        return false;
-      });
-      break;
-    case StatisticsFilter.YEAR:
-      watchedFilms = films.filter((film) => {
-        if (moment(film.watchingDate).isBetween(dateAYearAgo, currentDate)) {
-          return film;
-        }
-        return false;
-      });
-      break;
-    default:
-      throw new Error(`Error statistics filter`);
-  }
-};
-
 export default class Statistics {
   constructor(container, moviesModel) {
     this._container = container;
@@ -92,6 +42,56 @@ export default class Statistics {
     this._statisticsComponent.setStatisticsChangeHandler(this._statisticsChangeHandler);
   }
 
+  _choosingStatisticsFilter(statisticsFilter, statisticsData, films) {
+    let watchedFilms = null;
+    const currentDate = moment();
+    const dateAWeekAgo = moment().subtract(7, MomentSetting.DAYS);
+    const dateAMonthAgo = moment().subtract(1, MomentSetting.MONTH);
+    const dateAYearAgo = moment().subtract(1, MomentSetting.YEAR);
+
+    switch (statisticsFilter) {
+      case StatisticsFilter.ALL_TIME:
+        watchedFilms = filtersData[FilterType.HISTORY](films);
+        statisticsData.watchedCount = watchedFilms.length;
+        watchedFilms = films.filter((film) => film.watchingDate !== null);
+        break;
+      case StatisticsFilter.TODAY:
+        watchedFilms = films.filter((film) => {
+          if (moment(film.watchingDate).isSame(currentDate, MomentSetting.DAY)) {
+            return film;
+          }
+          return false;
+        });
+        break;
+      case StatisticsFilter.WEEK:
+        watchedFilms = films.filter((film) => {
+          if (moment(film.watchingDate).isBetween(dateAWeekAgo, currentDate)) {
+            return film;
+          }
+          return false;
+        });
+        break;
+      case StatisticsFilter.MONTH:
+        watchedFilms = films.filter((film) => {
+          if (moment(film.watchingDate).isBetween(dateAMonthAgo, currentDate)) {
+            return film;
+          }
+          return false;
+        });
+        break;
+      case StatisticsFilter.YEAR:
+        watchedFilms = films.filter((film) => {
+          if (moment(film.watchingDate).isBetween(dateAYearAgo, currentDate)) {
+            return film;
+          }
+          return false;
+        });
+        break;
+      default:
+        throw new Error(`Error statistics filter`);
+    }
+  }
+
   _getStatisticsDataFilms(films, statisticsFilter) {
     const statisticsData = {
       watchedCount: null,
@@ -103,7 +103,7 @@ export default class Statistics {
 
     const allGenres = [];
 
-    choosingStatisticsFilter(statisticsFilter, statisticsData, films);
+    this._choosingStatisticsFilter(statisticsFilter, statisticsData, films);
 
     statisticsData.watchedCount = filtersData[FilterType.HISTORY](films).length;
     statisticsData.totalDuration = filtersData[FilterType.HISTORY](films).reduce((count, {runtime}) => count + runtime, 0);

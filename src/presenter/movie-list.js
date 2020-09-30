@@ -1,4 +1,4 @@
-import {UPDATE_FILM, ExtraSectionTitle, FilmCardsShowCount, SortingType, UpdateType} from '../constants.js';
+import {ExtraSectionTitle, FilmCardsShowCount, SortingType, UpdateType, UserAction} from '../constants.js';
 import {getSortedFilmsByRating, getSortedFilmsByComments, sortingByDate, sortingByRating} from '../utils/film.js';
 import {RenderPosition, render, remove} from '../utils/render.js';
 
@@ -8,15 +8,17 @@ import FilmsListView from '../view/films-list.js';
 import FilmsContainerView from '../view/films-container.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import FilmsExtraContainerView from '../view/films-extra-container.js';
+import LoadingView from '../view/loading.js';
 
 import FilmPresenter from './film.js';
 
 import {filtersData} from '../utils/filter.js';
 
 export default class MovieList {
-  constructor(bodyContainer, mainContainer, moviesModel, filtersModel) {
+  constructor(bodyContainer, mainContainer, moviesModel, filtersModel, api) {
     this._moviesModel = moviesModel;
     this._filtersModel = filtersModel;
+    this._api = api;
 
     this._bodyContainer = bodyContainer;
     this._mainContainer = mainContainer;
@@ -25,12 +27,14 @@ export default class MovieList {
     this._filmsListComponent = new FilmsListView();
     this._filmsContainerComponent = new FilmsContainerView();
     this._sortingComponent = new SortingView();
+    this._loadingComponent = new LoadingView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
     this._mostRatedListComponent = new FilmsExtraContainerView(ExtraSectionTitle.TOP_RATED);
     this._mostCommentedListComponent = new FilmsExtraContainerView(ExtraSectionTitle.MOST_COMMENTED);
 
     this._showingFilmsCount = FilmCardsShowCount.ON_START;
     this._currentSortingType = SortingType.DEFAULT;
+    this._isLoading = true;
 
     this._filmPresenter = {};
     this._mostRatedFilmPresenter = {};
@@ -67,6 +71,11 @@ export default class MovieList {
   }
 
   _renderFilmsList() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     this._renderSorting();
     render(this._mainContainer, this._filmsSectionComponent, RenderPosition.BEFOREEND);
     render(this._filmsSectionComponent, this._filmsListComponent, RenderPosition.AFTERBEGIN);
@@ -141,8 +150,12 @@ export default class MovieList {
     });
   }
 
+  _renderLoading() {
+    render(this._mainContainer, this._loadingComponent, RenderPosition.BEFOREEND);
+  }
+
   _renderFilmCard(container, film, presenterStore) {
-    const filmPresenter = new FilmPresenter(container, this._bodyContainer, this._handleViewAction, this._handleModeChange);
+    const filmPresenter = new FilmPresenter(container, this._bodyContainer, this._handleViewAction, this._handleModeChange, this._api);
 
     filmPresenter.init(film);
     presenterStore[film.id] = filmPresenter;
@@ -194,9 +207,21 @@ export default class MovieList {
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
-      case UPDATE_FILM:
-        this._moviesModel.update(updateType, update);
+      case UserAction.UPDATE_FILM:
+        this._api.updateFilm(update).then((response) => {
+          this._moviesModel.update(updateType, response);
+        });
         break;
+      case UserAction.DELETE_COMMENT:
+        this._moviesModel.update(updateType, update);
+        this._api.deleteComment(update.deletedCommentId).then(() => {
+          this._moviesModel.update(updateType, update);
+        });
+        break;
+      case UserAction.ADD_COMMENT:
+        this._api.addComment(update).then((response) => {
+          this._moviesModel.update(updateType, response);
+        });
     }
   }
 
@@ -207,6 +232,11 @@ export default class MovieList {
         break;
       case UpdateType.MAJOR:
         this._clearFilmsList({resetRenderedFilmsCount: true, resetSortingType: true});
+        this._renderFilmsList();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderFilmsList();
         break;
     }
@@ -224,6 +254,7 @@ export default class MovieList {
     this._mostRatedFilmPresenter = {};
 
     remove(this._sortingComponent);
+    remove(this._loadingComponent);
     remove(this._showMoreButtonComponent);
     remove(this._mostRatedListComponent);
     remove(this._mostCommentedListComponent);

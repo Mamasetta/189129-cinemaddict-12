@@ -14,8 +14,8 @@ const formatDate = (date, formatKey) => {
         return moment(date).year();
       case FormatKey.DETAILS:
         return moment(date).format(`DD MMMM YYYY`);
-      case FormatKey.COMMENT:
-        return moment(date).fromNow();
+      // case FormatKey.COMMENT:
+      //   return moment(date).fromNow();
     }
   }
   throw new Error(`incorrect data`);
