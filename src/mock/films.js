@@ -24,9 +24,9 @@ const getCommentDate = () => {
   const date = getRandomInteger(CommonValue.MIN, DateValue.DATE_MAX);
   const hours = getRandomInteger(CommonValue.MIN, DateValue.HOURS_MAX);
   const minutes = getRandomInteger(CommonValue.MIN, DateValue.MINUTES_MAX);
-  commentDate.setDate(commentDate.getDate() + date);
-  commentDate.setHours(commentDate.getHours() + hours);
-  commentDate.setMinutes(commentDate.getMinutes() + minutes);
+  commentDate.setDate(commentDate.getDate() - date);
+  commentDate.setHours(commentDate.getHours() - hours);
+  commentDate.setMinutes(commentDate.getMinutes() - minutes);
 
   return commentDate;
 };
@@ -56,5 +56,6 @@ export const generateFilmData = () => ({
   ageRating: getRandomInteger(CommonValue.MIN, CommonValue.MAX),
   isInWatchlist: getRandomBoolean(),
   isFavorite: getRandomBoolean(),
-  isHistory: getRandomBoolean()
+  isHistory: getRandomBoolean(),
+  watchingDate: getCommentDate()
 });

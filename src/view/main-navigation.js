@@ -1,19 +1,9 @@
 import AbstractView from './abstract.js';
 import {FilterType} from '../constants.js';
 
-// const createFilterName = (name) => (
-//   name.split(``).map((letter, index) => (index === 0 ? letter.toUpperCase() : letter)).join(``)
-// );
-//
-// const createFiltersTemplate = (filters) => (
-//   [...filters].map(({name, count}) => {
-//     return `<a href="#${name}" class="main-navigation__item">${createFilterName(name)}<span class="main-navigation__item-count">${count}</span></a>`;
-//   }).join(``)
-// );
-
 const createMenuItemTemplate = (filter, currentFilter) => {
   const {type, name, count} = filter;
-  return `<a href="#watchlist" class="main-navigation__item ${type === currentFilter ? `main-navigation__item--active` : ``}" data-filter-type="${type}">${name} <span class="main-navigation__item-count">${count}</span></a>`;
+  return `<a href="${type}" class="main-navigation__item ${type === currentFilter ? `main-navigation__item--active` : ``}" data-filter-type="${type}">${name} <span class="main-navigation__item-count">${count}</span></a>`;
 };
 
 const createMainNavigationTemplate = (filterItems, currentFilter) => {
@@ -38,10 +28,21 @@ export default class MainNavigation extends AbstractView {
     this._currentFilter = currentFilterType;
 
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
+    this._statisticsClickHandler = this._statisticsClickHandler.bind(this);
   }
 
   getTemplate() {
     return createMainNavigationTemplate(this._filter, this._currentFilter);
+  }
+
+  setFilterTypeChangeHandler(callback) {
+    this._callback.filterTypeChange = callback;
+    this.getElement().querySelectorAll(`.main-navigation__item`).forEach((element) => element.addEventListener(`click`, this._filterTypeChangeHandler));
+  }
+
+  setStatisticsClickHandler(callback) {
+    this._callback.statisticsClick = callback;
+    this.getElement().querySelector(`.main-navigation__additional`).addEventListener(`click`, this._statisticsClickHandler);
   }
 
   _filterTypeChangeHandler(evt) {
@@ -49,8 +50,8 @@ export default class MainNavigation extends AbstractView {
     this._callback.filterTypeChange(evt.target.dataset.filterType);
   }
 
-  setFilterTypeChangeHandler(callback) {
-    this._callback.filterTypeChange = callback;
-    this.getElement().addEventListener(`click`, this._filterTypeChangeHandler);
+  _statisticsClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.statisticsClick();
   }
 }

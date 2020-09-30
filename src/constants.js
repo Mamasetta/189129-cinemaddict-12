@@ -127,17 +127,19 @@ const UpdateType = {
   MAJOR: `MAJOR`
 };
 
-const UserAction = {
-  UPDATE_FILM: `UPDATE_FILM`,
-  DELETE_COMMENT: `DELETE`,
-  ADD_COMMENT: `ADD_COMMENT`
-};
-
 const FilterType = {
   ALL_MOVIES: `all movies`,
   WATCHLIST: `watchlist`,
   HISTORY: `history`,
   FAVORITES: `favorites`
+};
+
+const StatisticsFilter = {
+  ALL_TIME: `all-time`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`
 };
 
 export {
@@ -164,5 +166,6 @@ export {
   SortingType,
   FormatKey,
   UpdateType,
-  FilterType
+  FilterType,
+  StatisticsFilter
 };
